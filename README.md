@@ -9,11 +9,24 @@ Developing setup for development, testing, and deployment environment.
 
 ### VirtualBox
 
+**Desktop**
+
 1. Download and install the [guest OS](#general-information) (clean install).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/dev-setup/archive/refs/heads/main.zip) this project using the **host**.
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
+1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+
+**Server**
+
+1. Download and install the [guest OS](#general-information) (clean install).
+1. [User Setup](#user-setup) in the **guest**.
+1. Clone this project and open the folder.
+    ```bash
+    git clone https://github.com/ba1x/dev-setup.git
+    cd dev-setup
+    ```
 1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
 
 ### DigitalOcean
@@ -45,6 +58,7 @@ Developing setup for development, testing, and deployment environment.
 |---|---|---|---|---|---|
 | 1 | dev-labvm | dev | labvm | dev | dev |
 | 2 | dev-labvm-server | dev | labvm-server | dev | dev | 
+
 ### DigitalOcean
 
 | No | Operating System | CPU | RAM | SSD | Tested? | 
