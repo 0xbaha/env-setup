@@ -22,6 +22,7 @@ NORMAL=$(tput sgr0)     # Normal text
 
 TIMEZONE="Asia/Jakarta"
 NEW_USERNAME=""
+DNS_NAMESERVER="208.67.222.222"
 
 # ----------------------------------------------------------------- #
 
@@ -266,8 +267,8 @@ install_other_apps() {
 
     install_openssh                 # Install OpenSSH
     install_htop                    # Install htop
-    install_nettools                # Install net-tools
     install_git                     # Install Git
+    install_nettools                # Install net-tools
     install_python_dependencies     # Install Python dependencies
     install_docker                  # Install Docker
     install_nginx                   # Install NGINX
@@ -277,7 +278,7 @@ install_other_apps() {
 }
 
 
-# ============================== INIT ================================
+# =========================== INIT SETUP ============================
 
 # Create sudo user
 create_sudo_user() {
@@ -709,7 +710,9 @@ install_redis() {
     sudo apt install redis-server -y
 
 }
-    
+
+
+# =========================== END SETUP =============================
 
 # Enable the firewall
 enable_firewall() {
@@ -773,3 +776,5 @@ main "$@"
 # - How to fix ERROR: Couldn’t connect to Docker daemon at http+docker://localhost – is it running? https://techoverflow.net/2019/03/16/how-to-fix-error-couldnt-connect-to-docker-daemon-at-httpdocker-localhost-is-it-running/
 # - What does "sudo apt-get update" do? https://askubuntu.com/a/222352
 # - Check Whether a User Exists https://stackoverflow.com/a/14811915
+# - How to insert text into a root-owned file using sudo? https://unix.stackexchange.com/a/4337
+# - Temporary failure in name resolution https://stackoverflow.com/a/54460886

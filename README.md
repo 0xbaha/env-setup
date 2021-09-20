@@ -1,6 +1,6 @@
 # Dev Setup
 
-Developing setup for development, testing, and deployment environment.
+Setup for development, testing, and deployment environment.
 
 - Virtual machine setup in [VirtualBox 6.1](#notes) for **development** environment.
 - Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **deployment** environment.
@@ -9,11 +9,25 @@ Developing setup for development, testing, and deployment environment.
 
 ### VirtualBox
 
+**Desktop**
+
 1. Download and install the [guest OS](#general-information) (clean install).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/dev-setup/archive/refs/heads/main.zip) this project using the **host**.
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
+1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+
+**Server**
+
+1. Download and install the [guest OS](#general-information) (clean install).
+1. [User Setup](#user-setup) in the **guest**.
+1. [Fix Error](#fix-error) in the **guest**.
+1. Clone this project and open the folder.
+    ```bash
+    git clone https://github.com/ba1x/dev-setup.git
+    cd dev-setup
+    ```
 1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
 
 ### DigitalOcean
@@ -24,31 +38,43 @@ Developing setup for development, testing, and deployment environment.
     ssh root@SERVER_IP_ADDRESS     # login using SSH
     ```
 1. Clone this project and open the folder.
-
     ```bash
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
 1. Run command [`./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+
+### (Optional) After Finish Setup
+
 1. SSH manual [setup](https://gist.github.com/ba1x/38a6b359e2b4221b72adff201403045d) for using the existing key.
+1. [Clear](https://gist.github.com/ba1x/35621c685282993146f6c51afd6f9bef) bash history if necessary.
 
 ## General Information
 
 ### VirtualBox
 
-| No | Operating System | CPU | RAM | HDD | VGA | Tested? | 
-|----|------------------|-----|-----|-----|-----|---------|
-| 1 | [Ubuntu Desktop 20.04.3 LTS](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | ✅ |
-| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB | 64 MB |  |
+**Settings**
 
-- VM Profile
-    ```
-    name = dev
-    host = labvm
-    user = dev
-    pass = dev
-    ```
-- Do a **Minimal Installation**.
+| No | Operating System | CPU | RAM | HDD | VGA | Network | Tested? |
+|---|---|---|---|---|---|---|---|
+| 1 | [Ubuntu Desktop 20.04.3 LTS<sup>1</sup>](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
+| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB<sup>2</sup> | 16 MB | Bridged | ✅ |
+
+```bash
+ 1. Minimal Installation
+ 2. /        5.0 GB  ext4
+    /boot    500 MB  ext4
+    /home    1.5 GB  ext4
+    /var     2.0 GB  ext4
+    SWAP     1.0 GB  swap
+```
+
+**Profile**
+
+| No | VM Name | Name | Hostname | Username | Password |
+|---|---|---|---|---|---|
+| 1 | dev-labvm | dev | labvm | dev | dev |
+| 2 | dev-labvm-server | dev | labvm-server | dev | dev | 
 
 ### DigitalOcean
 
@@ -78,9 +104,25 @@ Developing setup for development, testing, and deployment environment.
     sudo reboot now
     ```
 
+## Fix Error
+
+- (Optional) [Fix: Temporary failure in name resolution](https://stackoverflow.com/a/54460886)
+    ```bash
+    # Disable systemd-resolved service
+    sudo systemctl disable systemd-resolved.service
+    # Stop the service
+    sudo systemctl stop systemd-resolved.service
+    # Remove the link to /run/systemd/resolve/stub-resolv.conf in /etc/resolv.conf
+    sudo rm /etc/resolv.conf
+    # Add a manually created resolv.conf in /etc/
+    sudo touch /etc/resolv.conf
+    # Add a prefered DNS server there, eg. 208.67.222.222 (OpenDNS)
+    echo "nameserver $DNS_NAMESERVER" | sudo tee -a /etc/resolv.conf > /dev/null
+    ```
+
 ## Install VBox Guest
 
-Before run the commands below, please **`Insert Guest Addition CD Image CD...`**.
+Before run the commands below, please **`Insert Guest Addition CD Image CD...`**
 
 Open **Terminal** and run the following commands.
 
@@ -123,13 +165,13 @@ After finish installing, please remove the **`Guest Addition CD Image`**
 - Set timezone
     ```bash
     # Set timezone
-    timedatectl set-timezone Asia/Jakarta
+    timedatectl set-timezone $TIMEZONE
     ```
 - Update and upgrade the packages
     ```bash
     # Update the package lists that need upgrading
     sudo apt update
-    # Upgrade packages and its depencencies
+    # Upgrade packages and its dependencies
     sudo apt dist-upgrade
     ```
 
