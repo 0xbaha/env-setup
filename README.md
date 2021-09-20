@@ -23,6 +23,7 @@ Setup for development, testing, and deployment environment.
 
 1. Download and install the [guest OS](#general-information) (clean install).
 1. [User Setup](#user-setup) in the **guest**.
+1. [Fix Error](#fix-error) in the **guest**.
 1. Clone this project and open the folder.
     ```bash
     git clone https://github.com/ba1x/dev-setup.git
@@ -95,6 +96,22 @@ Setup for development, testing, and deployment environment.
     ```bash
     # Reboot the system
     sudo reboot now
+    ```
+
+## Fix Error
+
+- (Optional) [Fix: Temporary failure in name resolution](https://stackoverflow.com/a/54460886)
+    ```bash
+    # Disable systemd-resolved service
+    sudo systemctl disable systemd-resolved.service
+    # Stop the service
+    sudo systemctl stop systemd-resolved.service
+    # Remove the link to /run/systemd/resolve/stub-resolv.conf in /etc/resolv.conf
+    sudo rm /etc/resolv.conf
+    # Add a manually created resolv.conf in /etc/
+    sudo touch /etc/resolv.conf
+    # Add a prefered DNS server there
+    echo "nameserver $DNS_NAMESERVER" | sudo tee -a /etc/resolv.conf > /dev/null
     ```
 
 ## Install VBox Guest
@@ -301,19 +318,6 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     sudo ufw allow OpenSSH
     # Allow NGINX
     sudo ufw allow 'Nginx Full'
-    ```
-- (Optional) Fix: Temporary failure in name resolution
-    ```bash
-    # Disable systemd-resolved service
-    sudo systemctl disable systemd-resolved.service
-    # Stop the service
-    sudo systemctl stop systemd-resolved.service
-    # Remove the link to /run/systemd/resolve/stub-resolv.conf in /etc/resolv.conf
-    sudo rm /etc/resolv.conf
-    # Add a manually created resolv.conf in /etc/
-    sudo touch /etc/resolv.conf
-    # Add a prefered DNS server there
-    echo "nameserver $DNS_NAMESERVER" | sudo tee -a /etc/resolv.conf > /dev/null
     ```
 - Reboot the system
     ```bash
