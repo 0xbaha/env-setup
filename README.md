@@ -57,12 +57,12 @@ Setup for development, testing, and deployment environment.
 
 | No | Operating System | CPU | RAM | HDD | VGA | Network | Tested? |
 |---|---|---|---|---|---|---|---|
-| 1 | [Ubuntu Desktop 20.04.3 LTS<sup>[1]</sup>](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
-| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB<sup>[2]</sup> | 16 MB | Bridged | ✅ |
+| 1 | [Ubuntu Desktop 20.04.3 LTS<sup>1</sup>](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
+| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB<sup>2</sup> | 16 MB | Bridged | ✅ |
 
 ```bash
-[1] Minimal Installation
-[2] /        5.0 GB  ext4
+ 1. Minimal Installation
+ 2. /        5.0 GB  ext4
     /boot    500 MB  ext4
     /home    1.5 GB  ext4
     /var     2.0 GB  ext4
