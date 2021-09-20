@@ -26,8 +26,8 @@ Developing setup for development, testing, and deployment environment.
 1. Clone this project and open the folder.
 
     ```bash
-    git clone https://github.com/ba1x/server-setup.git
-    cd server-setup
+    git clone https://github.com/ba1x/dev-setup.git
+    cd dev-setup
     ```
 1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
 
