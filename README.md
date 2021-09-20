@@ -111,7 +111,7 @@ Setup for development, testing, and deployment environment.
     sudo rm /etc/resolv.conf
     # Add a manually created resolv.conf in /etc/
     sudo touch /etc/resolv.conf
-    # Add a prefered DNS server there
+    # Add a prefered DNS server there, eg. 208.67.222.222 (OpenDNS)
     echo "nameserver $DNS_NAMESERVER" | sudo tee -a /etc/resolv.conf > /dev/null
     ```
 
