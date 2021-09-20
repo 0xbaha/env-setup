@@ -140,7 +140,7 @@ ask_user_option() {
 
     ask_user
 
-    while [ "$user_option" != "1" ] && [ "$user_option" != "2" ]; do
+    while [ "$user_option" != "1" ] && [ "$user_option" != "2" ] && [ "$user_option" != "3" ]; do
         ask_user
     done
 
@@ -284,6 +284,8 @@ create_sudo_user() {
 
     temp="Create sudo user"
     printf "${CYAN}${temp}:${NC}\n"
+
+    is_continue=false
 
     while [ $is_continue = false ]; do
 
