@@ -22,6 +22,7 @@ NORMAL=$(tput sgr0)     # Normal text
 
 TIMEZONE="Asia/Jakarta"
 NEW_USERNAME=""
+DNS_NAMESERVER="208.67.222.222"
 
 # ----------------------------------------------------------------- #
 
@@ -277,7 +278,7 @@ install_other_apps() {
 }
 
 
-# ============================== INIT ================================
+# =========================== INIT SETUP ============================
 
 # Create sudo user
 create_sudo_user() {
@@ -709,7 +710,9 @@ install_redis() {
     sudo apt install redis-server -y
 
 }
-    
+
+
+# =========================== END SETUP =============================
 
 # Enable the firewall
 enable_firewall() {
@@ -737,6 +740,44 @@ enable_firewall() {
 
 }
 
+
+# Fix: Temporary failure in name resolution
+fix_temporary_failure_in_name_resolution() {
+
+    TEMP_PRINT="Fix: Temporary failure in name resolution"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    # Disable systemd-resolved service
+    TEMP_PRINT="Disable systemd-resolved service"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo systemctl disable systemd-resolved.service
+
+    # Stop the service
+    TEMP_PRINT="Stop the service"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo systemctl stop systemd-resolved.service
+
+    # Remove the link to /run/systemd/resolve/stub-resolv.conf in /etc/resolv.conf
+    TEMP_PRINT="Remove the link to /run/systemd/resolve/stub-resolv.conf in /etc/resolv.conf"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo rm /etc/resolv.conf
+
+    # Add a manually created resolv.conf in /etc/
+    TEMP_PRINT="Add a manually created resolv.conf in /etc/"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo touch /etc/resolv.conf
+
+    # Add a prefered DNS server there
+    TEMP_PRINT="Add a prefered DNS server there"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    echo "nameserver $DNS_NAMESERVER" | sudo tee -a /etc/resolv.conf > /dev/null
+
+}
 
 # Reboot the system
 reboot_system() {
@@ -773,3 +814,4 @@ main "$@"
 # - How to fix ERROR: Couldn’t connect to Docker daemon at http+docker://localhost – is it running? https://techoverflow.net/2019/03/16/how-to-fix-error-couldnt-connect-to-docker-daemon-at-httpdocker-localhost-is-it-running/
 # - What does "sudo apt-get update" do? https://askubuntu.com/a/222352
 # - Check Whether a User Exists https://stackoverflow.com/a/14811915
+# - How to insert text into a root-owned file using sudo? https://unix.stackexchange.com/a/4337

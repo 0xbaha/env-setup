@@ -52,10 +52,18 @@ Developing setup for development, testing, and deployment environment.
 
 ### VirtualBox
 
-| No | Operating System | CPU | RAM | HDD | VGA | Tested? | Notes | 
+**Settings**
+
+| No | Operating System | CPU | RAM | HDD | VGA | Network | Tested? |
 |---|---|---|---|---|---|---|---|
-| 1 | [Ubuntu Desktop 20.04.3 LTS](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | ✅ | Minimal Installation |
-| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB | 16 MB | ✅ |  |
+| 1 | [Ubuntu Desktop 20.04.3 LTS*](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
+| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB | 16 MB | Bridged | ✅ |
+
+```
+* Minimal Installation
+```
+
+**Profile**
 
 | No | VM Name | Name | Hostname | Username | Password |
 |---|---|---|---|---|---|
@@ -135,7 +143,7 @@ After finish installing, please remove the **`Guest Addition CD Image`**
 - Set timezone
     ```bash
     # Set timezone
-    timedatectl set-timezone Asia/Jakarta
+    timedatectl set-timezone $TIMEZONE
     ```
 - Update and upgrade the packages
     ```bash
@@ -294,6 +302,19 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     sudo ufw allow OpenSSH
     # Allow NGINX
     sudo ufw allow 'Nginx Full'
+    ```
+- (Optional) Fix: Temporary failure in name resolution
+    ```bash
+    # Disable systemd-resolved service
+    sudo systemctl disable systemd-resolved.service
+    # Stop the service
+    sudo systemctl stop systemd-resolved.service
+    # Remove the link to /run/systemd/resolve/stub-resolv.conf in /etc/resolv.conf
+    sudo rm /etc/resolv.conf
+    # Add a manually created resolv.conf in /etc/
+    sudo touch /etc/resolv.conf
+    # Add a prefered DNS server there
+    echo "nameserver $DNS_NAMESERVER" | sudo tee -a /etc/resolv.conf > /dev/null
     ```
 - Reboot the system
     ```bash
