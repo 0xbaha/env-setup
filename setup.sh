@@ -757,6 +757,8 @@ reboot_system() {
         TEMP_PRINT="Reboot the system canceled."
         printf "${RED}${TEMP_PRINT}${NC}\n"
 
+        exit
+
     fi
 
 }
