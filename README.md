@@ -29,7 +29,8 @@ Developing setup for development, testing, and deployment environment.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+1. Run command [`./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+1. SSH manual [setup](https://gist.github.com/ba1x/38a6b359e2b4221b72adff201403045d) for using the existing key.
 
 ## General Information
 
