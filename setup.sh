@@ -299,6 +299,7 @@ create_sudo_user() {
 
     # Create the user
     sudo adduser $NEW_USERNAME
+    
     # Add to sudo group
     sudo usermod -aG sudo $NEW_USERNAME
 
