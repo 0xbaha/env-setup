@@ -100,7 +100,7 @@ Developing setup for development, testing, and deployment environment.
 
 ## Install VBox Guest
 
-Before run the commands below, please **`Insert Guest Addition CD Image CD...`**.
+Before run the commands below, please **`Insert Guest Addition CD Image CD...`**
 
 Open **Terminal** and run the following commands.
 
