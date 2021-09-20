@@ -141,7 +141,7 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     ```bash
     # Update the package lists that need upgrading
     sudo apt update
-    # Upgrade packages and its depencencies
+    # Upgrade packages and its dependencies
     sudo apt dist-upgrade
     ```
 
