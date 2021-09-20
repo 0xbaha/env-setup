@@ -36,20 +36,15 @@ Developing setup for development, testing, and deployment environment.
 
 ### VirtualBox
 
-| No | Operating System | CPU | RAM | HDD | VGA | Tested? | 
-|----|------------------|-----|-----|-----|-----|---------|
-| 1 | [Ubuntu Desktop 20.04.3 LTS](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | ✅ |
-| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB | 16 MB |  |
+| No | Operating System | CPU | RAM | HDD | VGA | Tested? | Notes | 
+|---|---|---|---|---|---|---|---|
+| 1 | [Ubuntu Desktop 20.04.3 LTS](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | ✅ | Minimal Installation |
+| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB | 16 MB | ✅ |  |
 
-- VM Profile
-    ```
-    name = dev
-    host = labvm
-    user = dev
-    pass = dev
-    ```
-- Do a **Minimal Installation**.
-
+| No | VM Name | Name | Hostname | Username | Password |
+|---|---|---|---|---|---|
+| 1 | dev-labvm | dev | labvm | dev | dev |
+| 2 | dev-labvm-server | dev | labvm-server | dev | dev | 
 ### DigitalOcean
 
 | No | Operating System | CPU | RAM | SSD | Tested? | 
