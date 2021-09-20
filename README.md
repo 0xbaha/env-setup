@@ -39,7 +39,7 @@ Developing setup for development, testing, and deployment environment.
 | No | Operating System | CPU | RAM | HDD | VGA | Tested? | 
 |----|------------------|-----|-----|-----|-----|---------|
 | 1 | [Ubuntu Desktop 20.04.3 LTS](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | ✅ |
-| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB | 64 MB |  |
+| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB | 16 MB |  |
 
 - VM Profile
     ```
