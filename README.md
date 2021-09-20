@@ -39,7 +39,6 @@ Developing setup for development, testing, and deployment environment.
     ssh root@SERVER_IP_ADDRESS     # login using SSH
     ```
 1. Clone this project and open the folder.
-
     ```bash
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
