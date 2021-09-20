@@ -156,13 +156,13 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     ```
 - [Install MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
     ```bash
-    # Update the packages index and install the dependencies
+    # Install the dependencies of MySQL Workbench
     sudo apt install libopengl0 libpcrecpp0v5 libproj15 libzip5
     # Download installer
     wget https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community_8.0.26-1ubuntu20.04_amd64.deb
-    # Install
+    # Install the MySQL Workbench
     sudo dpkg -i mysql-*
-    # Remove installer file
+    # Remove the installer after installation finish
     rm mysql-*
 
     ```
@@ -176,7 +176,7 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     sudo mv Postman /opt
     # Create a Symbolic Links
     sudo ln -s /opt/Postman/Postman /usr/local/bin/postman
-    # Create a desktop file for Postman App
+    # Create a desktop file for Postman app
     DESKTOP_FILE="/usr/share/applications/postman.desktop"
     echo "[Desktop Entry]" >> $DESKTOP_FILE
     echo "Type=Application" >> $DESKTOP_FILE
@@ -242,14 +242,14 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     ```
 - Install Docker
     ```bash
-    # Update the apt package index and install depdencies of Docker
+    # Install the dependencies of Docker
     sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release
     # Add Docker’s official GPG key
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     # Set up the stable repository of Docker and update the package index
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt update
-    # Update the apt package index, and install the latest version of Docker Engine and container
+    # Install the latest version of Docker Engine and container
     sudo apt install docker-ce docker-ce-cli containerd.io
     # Install Docker Compose
     sudo apt install docker-compose
@@ -274,7 +274,7 @@ After finish installing, please remove the **`Guest Addition CD Image`**
 
 ## End Setup
 
-- Enable the Uncomplicated Firewall (UFW)
+- Enable the firewall
     ```bash
     # Enable the Uncomplicated Firewall (UFW)
     sudo ufw enable
