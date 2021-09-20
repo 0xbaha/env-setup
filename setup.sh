@@ -469,14 +469,14 @@ install_postman() {
     TEMP_PRINT="Install Postman"
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
-    # Download the installer
-    TEMP_PRINT="Download the installer"
+    # Download Postman installer
+    TEMP_PRINT="Download Postman installer"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     wget --content-disposition https://dl.pstmn.io/download/latest/linux
     
-    # Extract package
-    TEMP_PRINT="Extract package"
+    # Extract Postman package
+    TEMP_PRINT="Extract Postman package"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     tar -xzf Postman-linux-*
@@ -493,8 +493,8 @@ install_postman() {
 
     sudo ln -s /opt/Postman/Postman /usr/local/bin/postman
     
-    # Create a desktop file for the app
-    TEMP_PRINT="Create a desktop file for the app"
+    # Create a desktop file for Postman app
+    TEMP_PRINT="Create a desktop file for Postman app"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     DESKTOP_FILE="/usr/share/applications/postman.desktop"
