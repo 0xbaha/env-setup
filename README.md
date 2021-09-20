@@ -30,7 +30,8 @@ Setup for development, testing, and deployment environment.
     cd dev-setup
     ```
 1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
-1. [Clear](https://gist.github.com/ba1x/35621c685282993146f6c51afd6f9bef) bash history if necessary.
+1. SSH manual [setup](https://gist.github.com/ba1x/38a6b359e2b4221b72adff201403045d) for using the existing key.
+1. 1. [Clear](https://gist.github.com/ba1x/35621c685282993146f6c51afd6f9bef) bash history if necessary.
 
 ### DigitalOcean
 
