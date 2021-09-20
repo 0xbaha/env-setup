@@ -267,8 +267,8 @@ install_other_apps() {
 
     install_openssh                 # Install OpenSSH
     install_htop                    # Install htop
-    install_nettools                # Install net-tools
     install_git                     # Install Git
+    install_nettools                # Install net-tools
     install_python_dependencies     # Install Python dependencies
     install_docker                  # Install Docker
     install_nginx                   # Install NGINX
