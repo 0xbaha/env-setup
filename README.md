@@ -313,6 +313,11 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     # Install Redis
     sudo apt install redis-server
     ```
+- Install PostgreSQL
+    ```bash
+    # Install PostgreSQL
+    sudo apt install libpq-dev postgresql postgresql-contrib
+    ```
 
 ## End Setup
 

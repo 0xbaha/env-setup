@@ -274,6 +274,7 @@ install_other_apps() {
     install_nginx                   # Install NGINX
     install_certbot                 # Install Certbot
     install_redis                   # Install Redis
+    install_postgresql              # Install PostgreSQL
 
 }
 
@@ -518,7 +519,6 @@ install_postman() {
 
 # ============================= OTHERS ===============================
 
-
 # Install OpenSSH
 install_openssh() {
 
@@ -550,6 +550,7 @@ install_nettools() {
     sudo apt install net-tools -y
 
 }
+
 
 # Install tree
 install_tree() {
@@ -708,6 +709,17 @@ install_redis() {
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     sudo apt install redis-server -y
+
+}
+
+
+# Install PostgreSQL
+install_postgresql() {
+
+    TEMP_PRINT="Install PostgreSQL"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install libpq-dev postgresql postgresql-contrib -y
 
 }
 
