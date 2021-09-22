@@ -62,10 +62,10 @@ Setup for development, testing, and deployment environment.
 
 ```bash
  1. Minimal Installation
- 2. /        5.0 GB  ext4
+ 2. /        7.0 GB  ext4
     /boot    500 MB  ext4
-    /home    1.5 GB  ext4
-    /var     2.0 GB  ext4
+    /home    500 MB  ext4
+    /var     1.0 GB  ext4
     SWAP     1.0 GB  swap
 ```
 
@@ -312,6 +312,11 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     ```bash
     # Install Redis
     sudo apt install redis-server
+    ```
+- Install PostgreSQL
+    ```bash
+    # Install PostgreSQL
+    sudo apt install libpq-dev postgresql postgresql-contrib
     ```
 
 ## End Setup
