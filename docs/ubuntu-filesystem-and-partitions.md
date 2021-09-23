@@ -47,3 +47,7 @@ Partition and Recommended Size
 3. 8 KB This is an empty partition that is used as a mount point for temporary files.
 4. Twice as large as the amount of RAM in the PC.
 5. Match this to the size of the Swap partition.
+
+## References
+
+1. [The types and definitions of Ubuntu Linux Partitions and Directories Explained](https://www.dell.com/support/kbdoc/en-id/000131456/the-types-and-definitions-of-ubuntu-linux-partitions-and-directories-explained)
