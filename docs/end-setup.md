@@ -1,4 +1,4 @@
-## End Setup
+# End Setup
 
 - Enable the firewall
     ```bash
@@ -9,7 +9,7 @@
     # Allow NGINX
     sudo ufw allow 'Nginx Full'
     ```
-- Change SSH Port
+- (Optional) Change the SSH Port
     ```bash
     # Change the default value
     sudo sed -i "s/#Port 22/Port $NEW_SSH_PORT/g" /etc/ssh/sshd_config
