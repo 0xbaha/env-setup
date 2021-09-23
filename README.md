@@ -2,7 +2,7 @@
 
 Setup for development, testing, and deployment environment.
 
-- Virtual machine setup in [VirtualBox 6.1](#notes) for **development** environment.
+- Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
 - Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **deployment** environment.
 
 ## How to Start
@@ -11,7 +11,7 @@ Setup for development, testing, and deployment environment.
 
 **Desktop**
 
-1. Download and install the [guest OS](#general-information) (clean install).
+1. Download and install the [guest OS](#virtualbox-1) (clean install).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/dev-setup/archive/refs/heads/main.zip) this project using the **host**.
@@ -20,7 +20,7 @@ Setup for development, testing, and deployment environment.
 
 **Server**
 
-1. Download and install the [guest OS](#general-information) (clean install).
+1. Download and install the [guest OS](#virtualbox-1) ([clean install](docs/install-ubuntu-server.md)).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Fix Error](#fix-error) in the **guest**.
 1. Clone this project and open the folder.
@@ -32,7 +32,7 @@ Setup for development, testing, and deployment environment.
 
 ### DigitalOcean
 
-1. Create a new droplet with the [required specification](#general-information).
+1. Create a new droplet with the [required specification](#digitalocean-1).
 1. Login to the server.
     ```bash
     ssh root@SERVER_IP_ADDRESS     # login using SSH
@@ -53,21 +53,18 @@ Setup for development, testing, and deployment environment.
 
 ### VirtualBox
 
+Operating system that already tested on VirtualBox:
+
+1. [Ubuntu Desktop 20.04.3 LTS](https://ubuntu.com/download/desktop)[<sup>2</sup>](#footnotes)
+1. [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server)[<sup>3</sup>](#footnotes)
+
+
 **Settings**
 
-| No | Operating System | CPU | RAM | HDD | VGA | Network | Tested? |
+| No | Type | CPU | RAM | HDD | VGA | Network | Tested? |
 |---|---|---|---|---|---|---|---|
-| 1 | [Ubuntu Desktop 20.04.3 LTS<sup>1</sup>](https://ubuntu.com/download/desktop) | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
-| 2 | [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server) | 1 CPU | 1024 MB | 10 GB<sup>2</sup> | 16 MB | Bridged | ✅ |
-
-```bash
- 1. Minimal Installation
- 2. /        7.0 GB  ext4
-    /boot    500 MB  ext4
-    /home    500 MB  ext4
-    /var     1.0 GB  ext4
-    SWAP     1.0 GB  swap
-```
+| 1 | Desktop | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
+| 2 | Server | 1 CPU | 1024 MB | 10 GB | 16 MB | Bridged | ✅ |
 
 **Profile**
 
@@ -78,9 +75,13 @@ Setup for development, testing, and deployment environment.
 
 ### DigitalOcean
 
-| No | Operating System | CPU | RAM | SSD | Tested? | 
-|----|------------------|-----|-----|-----|---------|
-| 1 | [Ubuntu 20.04 (LTS) x64](https://ubuntu.com/download/server) | 1 CPU | 1 GB | 25 GB | ✅ |
+Operating system that already tested on DigitalOcean:
+
+1. [Ubuntu 20.04 (LTS) x64](https://ubuntu.com/download/server)
+
+| No | Type | CPU | RAM | SSD | Tested? | 
+|---|---|---|---|---|---|
+| 1 | Shared CPU (Basic) | 1 CPU | 1 GB | 25 GB | ✅ |
 
 ## User Setup
 
@@ -337,6 +338,15 @@ After finish installing, please remove the **`Guest Addition CD Image`**
     sudo reboot now
     ```
 
-## Notes
+## Footnotes
 
-- VirtualBox 6.1.26 r145957 (Qt5.6.2)
+1. [VirtualBox 6.1.26 r145957 (Qt5.6.2)](https://www.virtualbox.org/wiki/Downloads)
+2. Minimal Installation
+3. Partition
+    ```bash
+    /        7.0 GB  ext4
+    /boot    500 MB  ext4
+    /home    500 MB  ext4
+    /var     1.0 GB  ext4
+    SWAP     1.0 GB  swap
+    ```
