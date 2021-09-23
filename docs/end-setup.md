@@ -11,8 +11,11 @@
     ```
 - Change SSH Port
     ```bash
+    # Change the default value
     sudo sed -i "s/#Port 22/Port $NEW_SSH_PORT/g" /etc/ssh/sshd_config
+    # Allow the new port in firewall
     sudo ufw allow $NEW_SSH_PORT/tcp
+    # Restart the service
     sudo systemctl restart ssh
     ```
 - Reboot the system
