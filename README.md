@@ -76,7 +76,7 @@ Operating system that already tested on VirtualBox:
 **Settings**
 
 | No | Type | CPU | RAM | HDD | VGA | Network | Tested? |
-|:---:|---|---|---|---|---|---|:---:|
+|:---:|---|---|---|---|---|:---:|:---:|
 | 1 | Desktop | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
 | 2 | Server | 1 CPU | 1024 MB | 10 GB | 16 MB | Bridged | ✅ |
 
