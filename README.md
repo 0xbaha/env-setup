@@ -1,9 +1,9 @@
 # Dev Setup
 
-Setup for development, testing, and deployment environment.
+Set up an environment for the development, testing, and staging.
 
 - Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
-- Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **deployment** environment.
+- Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **staging** environment.
 
 ## How to Start
 
