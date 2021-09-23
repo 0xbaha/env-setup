@@ -50,7 +50,7 @@ Set up an environment for the development, testing, staging, and production.
 
 1. Download and install the OS ([clean install](docs/install-ubuntu-server.md)).
 1. [User Setup](#user-setup).
-1. [Proxy Setup](#proxy-setup).
+1. (Optional) [Proxy Setup](#proxy-setup).
 1. Clone this project and open the folder.
     ```bash
     git clone https://github.com/ba1x/dev-setup.git
