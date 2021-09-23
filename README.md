@@ -33,7 +33,7 @@ Set up an environment for the development, testing, staging, and production.
 
 ### DigitalOcean
 
-1. Create a new droplet with the [required specification](#digitalocean-1).
+1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` for the **Authentication**.
 1. Login to the server.
     ```bash
     ssh root@SERVER_IP_ADDRESS     # login using SSH
