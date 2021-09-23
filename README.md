@@ -342,7 +342,7 @@ After finish installing, please remove the **`Guest Addition CD Image`**
 
 1. [VirtualBox 6.1.26 r145957 (Qt5.6.2)](https://www.virtualbox.org/wiki/Downloads)
 2. Minimal Installation
-3. Partition
+3. [Partition](docs/ubuntu-filesystem-and-partitions.md)
     ```bash
     /        7.0 GB  ext4
     /boot    500 MB  ext4
