@@ -17,7 +17,7 @@ Set up an environment for the development, testing, staging, and production.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/dev-setup/archive/refs/heads/main.zip) this project using the **host**.
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
-1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `1. Vbox (Desktop)` to [initiate](docs/init-setup.md) the setup and install the [required applications](docs/install-required-applications.md).
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `1. Vbox (Desktop)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 **Server**
 
@@ -29,7 +29,7 @@ Set up an environment for the development, testing, staging, and production.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox/Bare-metal (Server)` to [initiate](docs/init-setup.md) the setup and install the [required applications](docs/install-required-applications.md).
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox/Bare-metal (Server)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 ### DigitalOcean
 
@@ -43,7 +43,7 @@ Set up an environment for the development, testing, staging, and production.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean)` to [initiate](docs/init-setup.md) the setup and install the [required applications](docs/install-required-applications.md).
+1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 
 ### Dedicated/Bare-metal
@@ -56,7 +56,7 @@ Set up an environment for the development, testing, staging, and production.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox/Bare-metal (Server)` to [initiate](docs/init-setup.md) the setup and install the [required applications](docs/install-required-applications.md). 
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox/Bare-metal (Server)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup. 
 
 ### (Optional) After Finish Setup
 
