@@ -94,7 +94,7 @@ ask_user_option() {
 
     ask_user() {
 
-        printf "Which type?\n  1. VBox (Desktop)\n  2. VBox (Server)\n  3. Cloud (DigitalOcean)\n"
+        printf "Which type?\n  1. VBox (Desktop)\n  2. VBox/Bare-metal (Server)\n  3. Cloud (DigitalOcean)\n"
         read -p "Option: " user_option
 
         if [ "$user_option" == "1" ]; then
