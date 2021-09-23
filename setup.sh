@@ -29,6 +29,7 @@ DNS_NAMESERVER="208.67.222.222"
 # OTHERS
 
 is_continue=false
+is_change_ssh_port=false
 FILE_SETUP="setup.sh"
 FILE_TMP="_tmp.txt"
 
@@ -37,6 +38,8 @@ ARG_DESKTOP="desktop"
 ARG_DO="do"
 ARG_SERVER="server"
 ARG_VBOX="vbox"
+
+DEFAULT_NEW_SSH_PORT="11122"
 
 ################################ MAIN ###############################
 
@@ -50,30 +53,6 @@ main() {
         if [ "$is_continue" = true ]; then ask_user_option; fi
     
     
-    # ./setup.sh vbox desktop
-
-    elif [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "$ARG_VBOX" ] && [ "$2" == "$ARG_DESKTOP" ]; then
-
-        is_sudo_user
-        if [ "$is_continue" = true ]; then setup_vbox_desktop; fi
-    
-
-    # ./setup.sh vbox server
-
-    elif [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "$ARG_VBOX" ] && [ "$2" == "$ARG_SERVER" ]; then
-
-        is_sudo_user
-        if [ "$is_continue" = true ]; then setup_vbox_server; fi
-
-
-    # ./setup.sh cloud do
-
-    elif [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "$ARG_CLOUD" ] && [ "$2" == "$ARG_DO" ]; then
-
-        is_sudo_user
-        if [ "$is_continue" = true ]; then setup_cloud_digitalocean; fi
-
-
     # If the command is not valid, an error message will be shown
 
     else
@@ -147,6 +126,30 @@ ask_user_option() {
 
 }
 
+
+# Ask if user want to change SSH port
+ask_ssh_port() {
+
+    TEMP_PRINT="Change SSH default port? [y/N] "
+    read -p "$TEMP_PRINT" user_option_ssh_port
+
+    if [ "$user_option_ssh_port" == "y" ] || [ "$user_option_ssh_port" == "Y" ]; then
+
+        TEMP_PRINT="SSH port WILL be changed"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+        
+        is_change_ssh_port=true
+
+    else
+
+        TEMP_PRINT="SSH port will NOT be changed"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        is_change_ssh_port=false
+
+    fi
+
+}
 
 # -------------------------------------------------------------------
 
@@ -237,6 +240,10 @@ end_setup() {
 
     # Enable the firewall
     enable_firewall
+
+    # Change SSH Port
+    ask_ssh_port
+    if [ "$is_change_ssh_port" == true ]; then change_ssh_port; fi
 
     # Reboot the system 
     reboot_system       
@@ -749,6 +756,43 @@ enable_firewall() {
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo ufw allow 'Nginx Full'
+
+}
+
+
+# Change SSH Port
+change_ssh_port() {
+
+    TEMP_PRINT="Change SSH Port"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    TEMP_PRINT="Using default value"
+    TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    read -p "Enter New Port [default: $DEFAULT_NEW_SSH_PORT] " USER_INPUT_NEW_SSH_PORT
+
+    if [ "$USER_INPUT_NEW_SSH_PORT" == "" ]; then
+        printf "$TEMP_PRINT"
+        NEW_SSH_PORT="$DEFAULT_NEW_SSH_PORT"
+    fi
+    
+    # Change the default value
+    TEMP_PRINT="Change the default value"
+    TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo sed -i "s/#Port 22/Port $NEW_SSH_PORT/g" /etc/ssh/sshd_config
+    
+    # Allow the new port in firewall
+    TEMP_PRINT="Allow the new port in firewall"
+    TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo ufw allow $NEW_SSH_PORT/tcp
+    
+    # Restart the service
+    TEMP_PRINT="Restart the service"
+    TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo systemctl restart ssh
 
 }
 
