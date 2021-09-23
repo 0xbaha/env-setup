@@ -127,7 +127,7 @@ ask_user_option() {
 }
 
 
-# Ask if user want to change SSH port
+# Ask if user want to change the SSH port
 ask_ssh_port() {
 
     TEMP_PRINT="Change SSH default port? [y/N] "
