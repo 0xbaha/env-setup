@@ -1,9 +1,10 @@
 # Dev Setup
 
-Set up an environment for the development, testing, and staging.
+Set up an environment for the development, testing, staging, and production.
 
 - Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
 - Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **staging** environment.
+- Setup in dedicated/bare-metal server for **production** environment.
 
 ## How to Start
 
@@ -16,7 +17,7 @@ Set up an environment for the development, testing, and staging.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/dev-setup/archive/refs/heads/main.zip) this project using the **host**.
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
-1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `1. Vbox (Desktop)` to [initiate](docs/init-setup.md) the setup and install the [required applications](docs/install-required-applications.md).
 
 **Server**
 
@@ -28,7 +29,7 @@ Set up an environment for the development, testing, and staging.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox/Bare-metal (Server)` to [initiate](docs/init-setup.md) the setup and install the [required applications](docs/install-required-applications.md).
 
 ### DigitalOcean
 
@@ -42,7 +43,20 @@ Set up an environment for the development, testing, and staging.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean)` to [initiate](docs/init-setup.md) the setup and install the [required applications](docs/install-required-applications.md).
+
+
+### Dedicated/Bare-metal
+
+1. Download and install the OS ([clean install](docs/install-ubuntu-server.md)).
+1. [User Setup](#user-setup).
+1. [Proxy Setup](#proxy-setup).
+1. Clone this project and open the folder.
+    ```bash
+    git clone https://github.com/ba1x/dev-setup.git
+    cd dev-setup
+    ```
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox/Bare-metal (Server)` to [initiate](docs/init-setup.md) the setup and install the [required applications](docs/install-required-applications.md). 
 
 ### (Optional) After Finish Setup
 
@@ -148,194 +162,19 @@ Open **Terminal** and run the following commands.
     
 After finish installing, please remove the **`Guest Addition CD Image`**
 
-## Init Setup
 
-- Create sudo user
-    ```bash
-    # Create the user
-    sudo adduser $NEW_USERNAME
-    # Add to sudo group
-    sudo usermod -aG sudo $NEW_USERNAME
-    ```
-- Copy SSH authorized keys
-    ```bash
-    mkdir /home/$NEW_USERNAME/.ssh
-    cp /root/.ssh/authorized_keys /home/$NEW_USERNAME/.ssh/
-    chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
-    ```
-- Set timezone
-    ```bash
-    # Set timezone
-    timedatectl set-timezone $TIMEZONE
-    ```
-- Update and upgrade the packages
-    ```bash
-    # Update the package lists that need upgrading
-    sudo apt update
-    # Upgrade packages and its dependencies
-    sudo apt dist-upgrade
-    ```
+## Proxy Setup
 
-## Install Required Applications
-
-### Dev Tools
-
-- Install Visual Studio Code
+- Open environment file
     ```bash
-    # Install the dependencies
-    sudo apt install software-properties-common apt-transport-https wget
-    # Import the Microsoft GPG key
-    wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-    # Enable the repository and update the package index
-    sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    sudo apt update
-    # Install the package
-    sudo apt install code
+    sudo nano /etc/environment
     ```
-- [Install SQLite Browser](https://sqlitebrowser.org/dl/)
+    Then, add the following codes:
     ```bash
-    # Install SQLite Browser
-    sudo apt install sqlitebrowser
-    ```
-- [Install MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
-    ```bash
-    # Install the dependencies of MySQL Workbench
-    sudo apt install libopengl0 libpcrecpp0v5 libproj15 libzip5
-    # Download installer
-    wget https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community_8.0.26-1ubuntu20.04_amd64.deb
-    # Install the MySQL Workbench
-    sudo dpkg -i mysql-*
-    # Remove the installer after installation finish
-    rm mysql-*
-
-    ```
-- [Install Postman](https://speedysense.com/install-postman-on-ubuntu-20-04/)
-    ```bash
-    # Download Postman installer
-    wget --content-disposition https://dl.pstmn.io/download/latest/linux
-    # Extract Postman package
-    tar -xzf Postman-linux-*
-    # Move Postman directory to `opt/` directory
-    sudo mv Postman /opt
-    # Create a Symbolic Links
-    sudo ln -s /opt/Postman/Postman /usr/local/bin/postman
-    # Create a desktop file for Postman app
-    DESKTOP_FILE="/usr/share/applications/postman.desktop"
-    echo "[Desktop Entry]" >> $DESKTOP_FILE
-    echo "Type=Application" >> $DESKTOP_FILE
-    echo "Name=Postman" >> $DESKTOP_FILE
-    echo "Icon=/opt/Postman/app/resources/app/assets/icon.png" >> $DESKTOP_FILE
-    echo "Exec=\"/opt/Postman/Postman\"" >> $DESKTOP_FILE
-    echo "Comment=Postman GUI" >> $DESKTOP_FILE
-    echo "Categories=Development;Code;" >> $DESKTOP_FILE
-    # Remove the installer after installation finish
-    rm Postman-linux-*
-    ```
-
-### Others
-
-- Install OpenSSH
-    ```bash
-    # Install OpenSSH
-    sudo apt install openssh-server
-    ``` 
-- Install htop
-    ```bash
-    # Install htop
-    sudo apt install htop
-    ```
-- Install net-tools
-    ```bash
-    # Install net tools
-    sudo apt install net-tools
-    ```
-- Install tree
-    ```bash
-    # Install tree
-    sudo apt install tree
-    ```
-- Install rename
-    ```bash
-    # Install rename
-    sudo apt install rename
-    ```
-- Install Imagemagick
-    ```bash
-    # Install Imagemagick
-    sudo apt install imagemagick
-    ```
-- Install FileZilla
-    ```bash
-    # Install FileZilla
-    sudo apt install filezilla
-    ```
-- Install Git
-    ```bash
-    # Install git
-    sudo apt install git
-    ```
-- Install Python dependencies
-    ```bash
-    # Install Python environment
-    sudo apt install python3.8-venv
-    # Install PIP
-    sudo apt install python3-pip
-    # Install Django Admin
-    sudo apt install python3-django
-    ```
-- Install Docker
-    ```bash
-    # Install the dependencies of Docker
-    sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release
-    # Add Docker’s official GPG key
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    # Set up the stable repository of Docker and update the package index
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt update
-    # Install the latest version of Docker Engine and container
-    sudo apt install docker-ce docker-ce-cli containerd.io
-    # Install Docker Compose
-    sudo apt install docker-compose
-    # Adding user to the Docker group
-    sudo usermod -a -G docker $USER
-    ```
-- Install NGINX
-    ```bash
-    # Install NGINX
-    sudo apt install nginx
-    ```
-- Install Certbot and it’s NGINX plugin
-    ```bash
-    # Install Certbot and it’s NGINX plugin
-    sudo apt install certbot python3-certbot-nginx
-    ```
-- Install Redis
-    ```bash
-    # Install Redis
-    sudo apt install redis-server
-    ```
-- Install PostgreSQL
-    ```bash
-    # Install PostgreSQL
-    sudo apt install libpq-dev postgresql postgresql-contrib
-    ```
-
-## End Setup
-
-- Enable the firewall
-    ```bash
-    # Enable the Uncomplicated Firewall (UFW)
-    sudo ufw enable
-    # Allow OpenSSH
-    sudo ufw allow OpenSSH
-    # Allow NGINX
-    sudo ufw allow 'Nginx Full'
-    ```
-- Reboot the system
-    ```bash
-    # Reboot the system
-    # Some settings or installation need reboot to be affected.
-    sudo reboot now
+    http_proxy="http://$USERNAME:$PASSWORD@$SERVER:8080/"
+    https_proxy="http://$USERNAME:$PASSWORD@$SERVER:8080/"
+    ftp_proxy="http://$USERNAME:$PASSWORD@$SERVER:8080/"
+    no_proxy="127.0.0.1,localhost"
     ```
 
 ## Footnotes
