@@ -15,7 +15,7 @@
 
 ## Partition
 
-Partition and Recommended Size
+Ubuntu partition and its recommended size.
 
 |PARTITION|SIZE|DESCRIPTION|
 |:---:|:---:|:---|
