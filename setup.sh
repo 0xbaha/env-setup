@@ -134,7 +134,7 @@ ask_user_option() {
 
 # -------------------------------------------------------------------
 
-# Setup for desktop
+# Setup for VBox (desktop)
 setup_vbox_desktop() {
 
     TEMP_PRINT="Setup for VBox (desktop)"
@@ -153,7 +153,7 @@ setup_vbox_desktop() {
 }
 
 
-# Setup for server
+# Setup for VBox (server)
 setup_vbox_server() {
 
     TEMP_PRINT="Setup for VBox (server)"
