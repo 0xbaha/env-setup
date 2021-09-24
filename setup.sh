@@ -886,9 +886,32 @@ disable_ssh_password_auth() {
 
     }
 
+    # Ask if user already copy the Public Key to Authorized Keys
+    ask_copy_publickey_to_authorizedkey() {
+
+        TEMP_PRINT="Already copy the Public Key to Authorized Keys? [y/N] "
+        read -p "$TEMP_PRINT" USER_OPTION_COPY_PUBLICKEY
+
+        if [ "$USER_OPTION_COPY_PUBLICKEY" == "y" ] || [ "$USER_OPTION_COPY_PUBLICKEY" == "Y" ]; then
+
+            is_continue_disable_ssh_password_auth=true
+
+        else
+
+            TEMP_PRINT="Please copy the Public Key to Authorized Keys"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            exit
+
+        fi
+
+    }
+
     ask_disable_ssh_password_auth
 
-    if [ "$is_disable_ssh_password_auth" == true ]; then
+    if [ "$is_disable_ssh_password_auth" == true ]; then ask_copy_publickey_to_authorizedkey; fi
+
+    if [ "$is_disable_ssh_password_auth" == true ] && [ "$is_continue_disable_ssh_password_auth" == true ]; then
     
         # Change the default value
         sudo sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
