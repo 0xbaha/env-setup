@@ -127,30 +127,6 @@ ask_user_option() {
 }
 
 
-# Ask if user want to change the SSH port
-ask_ssh_port() {
-
-    TEMP_PRINT="Change SSH default port? [Y/n] "
-    read -p "$TEMP_PRINT" user_option_ssh_port
-
-    if [ "$user_option_ssh_port" == "n" ] || [ "$user_option_ssh_port" == "N" ]; then
-
-        TEMP_PRINT="SSH port will NOT be changed"
-        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-        is_change_ssh_port=false
-
-    else
-
-        TEMP_PRINT="SSH port WILL be changed"
-        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-        
-        is_change_ssh_port=true
-
-    fi
-
-}
-
 # -------------------------------------------------------------------
 
 # Setup for desktop
@@ -241,8 +217,8 @@ end_setup() {
     # Enable the firewall
     enable_firewall
 
-    # Change SSH Port
-    change_ssh_port
+    # SSH settings
+    ssh_settings
 
     # Reboot the system 
     reboot_system       
@@ -759,45 +735,30 @@ enable_firewall() {
 }
 
 
-# Change the SSH Port
-change_ssh_port() {
+# SSH settings
+ssh_settings() {
 
-    TEMP_PRINT="Change the SSH Port"
+    TEMP_PRINT="SSH settings"
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
-    # Ask if user want to change the SSH port
-    ask_ssh_port
+    TEMP_PRINT="Edit SSH settings? [Y/n] "
+    read -p "$TEMP_PRINT" user_option_ssh_settings
 
-    TEMP_PRINT="Using default value"
-    TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+    if [ "$user_option_ssh_settings" == "n" ] || [ "$user_option_ssh_settings" == "N" ]; then
 
-    # Change the SSH Port
-    if [ "$is_change_ssh_port" == true ]; then
-    
-        read -p "Enter the new port [default: $DEFAULT_NEW_SSH_PORT] " USERINPUT_NEW_SSH_PORT
+        TEMP_PRINT="SSH settings will NOT be edited"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
-        if [ "$USERINPUT_NEW_SSH_PORT" == "" ]; then
-            printf "$TEMP_PRINT"
-            USERINPUT_NEW_SSH_PORT="$DEFAULT_NEW_SSH_PORT"
-        fi
-    
-        # Change the default value
-        TEMP_PRINT="Change the default value"
-        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+    else
 
-        sudo sed -i "s/#Port 22/Port $USERINPUT_NEW_SSH_PORT/g" /etc/ssh/sshd_config
-    
-        # Allow the new port in firewall
-        TEMP_PRINT="Allow the new port in firewall"
-        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+        # Change the SSH Port
+        change_ssh_port
 
-        sudo ufw allow $USERINPUT_NEW_SSH_PORT/tcp
-    
-        # Restart the service
-        TEMP_PRINT="Restart the service"
-        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+        # Disable password authentication on SSH
+        disable_ssh_password_auth
 
-        sudo systemctl restart ssh
+        # Disable root login on SSH
+        disable_ssh_root_login
 
     fi
 
@@ -825,6 +786,156 @@ reboot_system() {
         printf "${RED}${TEMP_PRINT}${NC}\n"
 
         exit
+
+    fi
+
+}
+
+
+# -------------------------------------------------------------------
+
+# SSH
+
+# Change the SSH Port
+change_ssh_port() {
+
+    # Ask if user want to change the SSH port
+    ask_ssh_port() {
+
+        TEMP_PRINT="Change SSH default port? [Y/n] "
+        read -p "$TEMP_PRINT" user_option_ssh_port
+
+        if [ "$user_option_ssh_port" == "n" ] || [ "$user_option_ssh_port" == "N" ]; then
+
+            TEMP_PRINT="SSH port will NOT be changed"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            is_change_ssh_port=false
+
+        else
+
+            TEMP_PRINT="SSH port WILL be changed"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            
+            is_change_ssh_port=true
+
+        fi
+
+    }
+
+    TEMP_PRINT="Change the SSH Port"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    ask_ssh_port
+
+    if [ "$is_change_ssh_port" == true ]; then
+
+        read -p "Enter the new port [default: $DEFAULT_NEW_SSH_PORT] " USER_INPUT_NEW_SSH_PORT
+
+        TEMP_PRINT="Using default value"
+        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        if [ "$USER_INPUT_NEW_SSH_PORT" == "" ]; then
+            printf "$TEMP_PRINT"
+            USER_INPUT_NEW_SSH_PORT="$DEFAULT_NEW_SSH_PORT"
+        fi
+    
+        # Change the default value
+        TEMP_PRINT="Change the default value"
+        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo sed -i "s/#Port 22/Port $USER_INPUT_NEW_SSH_PORT/g" /etc/ssh/sshd_config
+    
+        # Allow the new port in firewall
+        TEMP_PRINT="Allow the new port in firewall"
+        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo ufw allow $USER_INPUT_NEW_SSH_PORT/tcp
+    
+    fi
+
+}
+
+
+# Disable password authentication on SSH
+disable_ssh_password_auth() {
+
+    # Ask if user want to disable password authentication on SSH
+    ask_disable_ssh_password_auth() {
+
+        TEMP_PRINT="Disable password authentication on SSH? [Y/n] "
+        read -p "$TEMP_PRINT" user_option_ssh_password_auth
+
+        if [ "$user_option_ssh_password_auth" == "n" ] || [ "$user_option_ssh_password_auth" == "N" ]; then
+
+            TEMP_PRINT="Password authentication on SSH will NOT be disabled"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            is_disable_ssh_password_auth=false
+
+        else
+
+            TEMP_PRINT="Password authentication on SSH will be DISABLED"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            
+            is_disable_ssh_password_auth=true
+
+        fi
+
+    }
+
+    TEMP_PRINT="Disable password authentication on SSH"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    ask_disable_ssh_password_auth
+
+    if [ "$is_disable_ssh_password_auth" == true ]; then
+    
+        # Change the default value
+        sudo sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
+    
+    fi
+
+}
+
+
+# Disable root login on SSH
+disable_ssh_root_login() {
+
+    # Ask if user want to disable root login on SSH
+    ask_disable_ssh_root_login() {
+
+        TEMP_PRINT="Disable root login on SSH? [Y/n] "
+        read -p "$TEMP_PRINT" user_option_ssh_root_login
+
+        if [ "$user_option_ssh_root_login" == "n" ] || [ "$user_option_ssh_root_login" == "N" ]; then
+
+            TEMP_PRINT="Root login on SSH will NOT be disabled"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            is_disable_ssh_root_login=false
+
+        else
+
+            TEMP_PRINT="Root login on SSH will be DISABLED"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            
+            is_disable_ssh_root_login=true
+
+        fi
+        
+    }
+
+    TEMP_PRINT="Disable root login on SSH"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    ask_disable_ssh_root_login
+
+    if [ "$is_disable_ssh_root_login" == true ]; then
+    
+        # Change the default value
+        sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
+        sudo sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config
 
     fi
 
