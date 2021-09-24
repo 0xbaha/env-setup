@@ -29,7 +29,7 @@ Set up an environment for the development, testing, staging, and production.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox (Server) / Bare-metal` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox (Server)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 ### DigitalOcean
 
@@ -56,7 +56,7 @@ Set up an environment for the development, testing, staging, and production.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox (Server) / Bare-metal` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup. 
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `4. Dedicated or Bare-metal server` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup. 
 
 ### (Optional) After Finish Setup
 
