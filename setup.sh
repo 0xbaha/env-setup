@@ -774,24 +774,24 @@ change_ssh_port() {
     # Change the SSH Port
     if [ "$is_change_ssh_port" == true ]; then
     
-        read -p "Enter the new port [default: $DEFAULT_NEW_SSH_PORT] " USER_INPUT_NEW_SSH_PORT
+        read -p "Enter the new port [default: $DEFAULT_NEW_SSH_PORT] " USERINPUT_NEW_SSH_PORT
 
-        if [ "$USER_INPUT_NEW_SSH_PORT" == "" ]; then
+        if [ "$USERINPUT_NEW_SSH_PORT" == "" ]; then
             printf "$TEMP_PRINT"
-            NEW_SSH_PORT="$DEFAULT_NEW_SSH_PORT"
+            USERINPUT_NEW_SSH_PORT="$DEFAULT_NEW_SSH_PORT"
         fi
     
         # Change the default value
         TEMP_PRINT="Change the default value"
         TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
 
-        sudo sed -i "s/#Port 22/Port $NEW_SSH_PORT/g" /etc/ssh/sshd_config
+        sudo sed -i "s/#Port 22/Port $USERINPUT_NEW_SSH_PORT/g" /etc/ssh/sshd_config
     
         # Allow the new port in firewall
         TEMP_PRINT="Allow the new port in firewall"
         TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
 
-        sudo ufw allow $NEW_SSH_PORT/tcp
+        sudo ufw allow $USERINPUT_NEW_SSH_PORT/tcp
     
         # Restart the service
         TEMP_PRINT="Restart the service"
