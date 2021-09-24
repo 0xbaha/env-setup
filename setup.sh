@@ -829,9 +829,6 @@ change_ssh_port() {
 
     }
 
-    TEMP_PRINT="Change the SSH Port"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
     ask_ssh_port
 
     if [ "$is_change_ssh_port" == true ]; then
