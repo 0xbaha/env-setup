@@ -130,22 +130,22 @@ ask_user_option() {
 # Ask if user want to change the SSH port
 ask_ssh_port() {
 
-    TEMP_PRINT="Change SSH default port? [y/N] "
+    TEMP_PRINT="Change SSH default port? [Y/n] "
     read -p "$TEMP_PRINT" user_option_ssh_port
 
-    if [ "$user_option_ssh_port" == "y" ] || [ "$user_option_ssh_port" == "Y" ]; then
-
-        TEMP_PRINT="SSH port WILL be changed"
-        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-        
-        is_change_ssh_port=true
-
-    else
+    if [ "$user_option_ssh_port" == "n" ] || [ "$user_option_ssh_port" == "N" ]; then
 
         TEMP_PRINT="SSH port will NOT be changed"
         printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
         is_change_ssh_port=false
+
+    else
+
+        TEMP_PRINT="SSH port WILL be changed"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+        
+        is_change_ssh_port=true
 
     fi
 
