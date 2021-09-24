@@ -12,7 +12,7 @@ Set up an environment for the development, testing, staging, and production.
 
 **Desktop**
 
-1. Download and install the [guest OS](#virtualbox-1) (clean install).
+1. Download and install the [guest OS](#virtualbox-1).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/dev-setup/archive/refs/heads/main.zip) this project using the **host**.
@@ -21,7 +21,7 @@ Set up an environment for the development, testing, staging, and production.
 
 **Server**
 
-1. Download and install the [guest OS](#virtualbox-1) ([clean install](docs/install-ubuntu-server.md)).
+1. Download and [install](docs/install-ubuntu-server.md)[<sup>3</sup>](#footnotes) the [guest OS](#virtualbox-1).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Fix Error](#fix-error) in the **guest**.
 1. Clone this project and open the folder.
@@ -48,7 +48,7 @@ Set up an environment for the development, testing, staging, and production.
 
 ### Dedicated/Bare-metal
 
-1. Download and install the OS ([clean install](docs/install-ubuntu-server.md)).
+1. Download and [install](docs/install-ubuntu-server.md)[<sup>4</sup>](#footnotes) the OS.
 1. [User Setup](#user-setup).
 1. (Optional) [Proxy Setup](#proxy-setup).
 1. Clone this project and open the folder.
@@ -96,6 +96,12 @@ Operating system that already tested on DigitalOcean:
 | No | Type | CPU | RAM | SSD | Tested? | 
 |:---:|---|---|---|---|:---:|
 | 1 | Shared CPU (Basic) | 1 CPU | 1 GB | 25 GB | ✅ |
+
+### Dedicated/Bare-metal
+
+Operating system that already tested on dedicated/bare-metal server:
+
+1. [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server)
 
 ## User Setup
 
@@ -181,11 +187,22 @@ After finish installing, please remove the **`Guest Addition CD Image`**
 
 1. [VirtualBox 6.1.26 r145957 (Qt5.6.2)](https://www.virtualbox.org/wiki/Downloads)
 2. Minimal Installation
-3. [Partition](docs/ubuntu-filesystem-and-partitions.md)
+3. [Partition](docs/ubuntu-filesystem-and-partitions.md) for `10 GB` HDD/SSD and `1 GB` RAM.
     ```bash
     /        7.0 GB  ext4
     /boot    500 MB  ext4
     /home    500 MB  ext4
     /var     1.0 GB  ext4
     SWAP     1.0 GB  swap
+    ```
+3. [Partition](docs/ubuntu-filesystem-and-partitions.md) for `1 TB` HDD/SSD and `8GB` RAM.
+    ```bash
+    /           240 GB  ext4
+    /boot       2.5 GB  ext4
+    /home       500 GB  ext4
+    /srv        2.5 GB  ext4
+    /usr        100 GB  ext4
+    /var         20 GB  ext4
+    /var/lib     50 GB  ext4
+    SWAP         16 GB  swap
     ```
