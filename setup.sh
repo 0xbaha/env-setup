@@ -179,11 +179,8 @@ setup_cloud_digitalocean() {
 
     # Init Setup
     create_user
-    basic_setup
-
-    # SSH settings
     ssh_settings
-    ask_continue_process
+    basic_setup
 
     # Install Required Apps
     install_other_apps
@@ -201,11 +198,8 @@ setup_physical_server() {
     printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
 
     # Init Setup
-    basic_setup
-
-    # SSH settings
     ssh_settings
-    ask_continue_process
+    basic_setup
 
     # Install Required Apps
     install_other_apps
@@ -254,6 +248,9 @@ ssh_settings() {
 
         # Disable root login on SSH
         disable_ssh_root_login
+
+        # Check if user want to continue the process
+        ask_continue_process
 
     fi
 
