@@ -801,8 +801,6 @@ change_ssh_port() {
 
     fi
 
-    
-
 }
 
 
