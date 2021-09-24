@@ -28,7 +28,6 @@ DNS_NAMESERVER="208.67.222.222"
 
 # OTHERS
 
-is_continue=false
 FILE_SETUP="setup.sh"
 FILE_TMP="_tmp.txt"
 
@@ -38,6 +37,8 @@ ARG_DO="do"
 ARG_SERVER="server"
 ARG_VBOX="vbox"
 
+DEFAULT_NEW_SSH_PORT="11122"
+
 ################################ MAIN ###############################
 
 main() {
@@ -46,34 +47,10 @@ main() {
 
     if [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "" ] && [ "$2" == "" ]; then
 
-        is_sudo_user
-        if [ "$is_continue" = true ]; then ask_user_option; fi
+        check_sudo_user
+        if [ "$IS_SUDO_USER" = true ]; then ask_user_option; fi
     
     
-    # ./setup.sh vbox desktop
-
-    elif [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "$ARG_VBOX" ] && [ "$2" == "$ARG_DESKTOP" ]; then
-
-        is_sudo_user
-        if [ "$is_continue" = true ]; then setup_vbox_desktop; fi
-    
-
-    # ./setup.sh vbox server
-
-    elif [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "$ARG_VBOX" ] && [ "$2" == "$ARG_SERVER" ]; then
-
-        is_sudo_user
-        if [ "$is_continue" = true ]; then setup_vbox_server; fi
-
-
-    # ./setup.sh cloud do
-
-    elif [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "$ARG_CLOUD" ] && [ "$2" == "$ARG_DO" ]; then
-
-        is_sudo_user
-        if [ "$is_continue" = true ]; then setup_cloud_digitalocean; fi
-
-
     # If the command is not valid, an error message will be shown
 
     else
@@ -92,7 +69,7 @@ main() {
 # ============================== START ==============================
 
 # Check if User is in sudo mode
-is_sudo_user() {
+check_sudo_user() {
     
     if [ `whoami` != root ]; then
     
@@ -103,7 +80,7 @@ is_sudo_user() {
 
     else
     
-        is_continue=true
+        IS_SUDO_USER=true
         
     fi
 
@@ -115,20 +92,27 @@ ask_user_option() {
 
     ask_user() {
 
-        printf "Which type?\n  1. VBox (Desktop)\n  2. VBox (Server)\n  3. Cloud (DigitalOcean)\n"
-        read -p "Option: " user_option
+        TEMP_PRINT="Which type?\n  1. VBox (Desktop)\n  2. VBox (Server)\n  3. Cloud (DigitalOcean)\n  4. Physical Server\n"
+        printf "$TEMP_PRINT"
 
-        if [ "$user_option" == "1" ]; then
+        TEMP_PRINT="Option: "
+        read -p "$TEMP_PRINT" USER_OPTION
+
+        if [ "$USER_OPTION" == "1" ]; then
 
             setup_vbox_desktop
 
-        elif [ "$user_option" == "2" ]; then
+        elif [ "$USER_OPTION" == "2" ]; then
 
             setup_vbox_server
 
-        elif [ "$user_option" == "3" ]; then
+        elif [ "$USER_OPTION" == "3" ]; then
 
             setup_cloud_digitalocean
+
+        elif [ "$USER_OPTION" == "4" ]; then
+
+            setup_physical_server
 
         else
 
@@ -141,7 +125,7 @@ ask_user_option() {
 
     ask_user
 
-    while [ "$user_option" != "1" ] && [ "$user_option" != "2" ] && [ "$user_option" != "3" ]; do
+    while [ "$USER_OPTION" != "1" ] && [ "$USER_OPTION" != "2" ] && [ "$USER_OPTION" != "3" ]; do
         ask_user
     done
 
@@ -150,14 +134,14 @@ ask_user_option() {
 
 # -------------------------------------------------------------------
 
-# Setup for desktop
+# Setup for VBox (desktop)
 setup_vbox_desktop() {
 
-    TEMP_PRINT="Setup for desktop"
+    TEMP_PRINT="Setup for VBox (desktop)"
     printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
 
     # Init Setup
-    init_setup
+    basic_setup
 
     # Install Required Apps
     install_dev_tools
@@ -169,14 +153,14 @@ setup_vbox_desktop() {
 }
 
 
-# Setup for server
+# Setup for VBox (server)
 setup_vbox_server() {
 
-    TEMP_PRINT="Setup for server"
+    TEMP_PRINT="Setup for VBox (server)"
     printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
 
     # Init Setup
-    init_setup
+    basic_setup
 
     # Install Required Apps
     install_other_apps
@@ -195,7 +179,8 @@ setup_cloud_digitalocean() {
 
     # Init Setup
     create_user
-    init_setup
+    ssh_settings
+    basic_setup
 
     # Install Required Apps
     install_other_apps
@@ -206,7 +191,26 @@ setup_cloud_digitalocean() {
 }
 
 
-# -------------------------------------------------------------------
+# Setup for physical server
+setup_physical_server() {
+
+    TEMP_PRINT="Setup for physical server"
+    printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
+
+    # Init Setup
+    ssh_settings
+    basic_setup
+
+    # Install Required Apps
+    install_other_apps
+
+    # End Setup
+    end_setup
+
+}
+
+
+# =========================== INIT SETUP ============================
 
 # Create User
 create_user() {
@@ -220,8 +224,41 @@ create_user() {
 }
 
 
-# Init Setup 
-init_setup() {
+# SSH settings
+ssh_settings() {
+
+    TEMP_PRINT="SSH settings"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    TEMP_PRINT="Edit SSH settings? [Y/n] "
+    read -p "$TEMP_PRINT" USER_OPTION_SSH_SETTINGS
+
+    if [ "$USER_OPTION_SSH_SETTINGS" == "n" ] || [ "$USER_OPTION_SSH_SETTINGS" == "N" ]; then
+
+        TEMP_PRINT="SSH settings will NOT be edited"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    else
+
+        # Change the SSH Port
+        change_ssh_port
+
+        # Disable password authentication on SSH
+        disable_ssh_password_auth
+
+        # Disable root login on SSH
+        disable_ssh_root_login
+
+        # Check if user want to continue the process
+        ask_continue_process
+
+    fi
+
+}
+
+
+# Basic Setup 
+basic_setup() {
 
     # Set timezone
     set_timezone
@@ -232,70 +269,47 @@ init_setup() {
 }
 
 
-# End Setup
-end_setup() {
-
-    # Enable the firewall
-    enable_firewall
-
-    # Reboot the system 
-    reboot_system       
-
-}
-
-
-# Install developing apps
-install_dev_tools() {
-
-    # Essential
-    install_vscode            # Install Visual Studio Code
-    install_sqlitebrowser     # Install SQLite Browser
-    install_mysqlworkbench    # Install MySQL Workbench
-    install_postman           # Install Postman
-
-    # Additional
-    install_filezilla         # Install FileZilla
-    install_tree              # Install tree
-    install_rename            # Install rename
-    install_imagemagick       # Install Imagemagick
-
-}
-
-
-# Install other apps
-install_other_apps() {
-
-    install_openssh                 # Install OpenSSH
-    install_htop                    # Install htop
-    install_git                     # Install Git
-    install_nettools                # Install net-tools
-    install_python_dependencies     # Install Python dependencies
-    install_docker                  # Install Docker
-    install_nginx                   # Install NGINX
-    install_certbot                 # Install Certbot
-    install_redis                   # Install Redis
-    install_postgresql              # Install PostgreSQL
-
-}
-
-
-# =========================== INIT SETUP ============================
+# -------------------------------------------------------------------
 
 # Create sudo user
 create_sudo_user() {
 
+    # Check if user exist
+    check_user_exist() {
+
+        id -u "$NEW_USERNAME" &> $FILE_TMP
+        temp1=$(cat $FILE_TMP | grep id)
+
+        if [ "$temp1" == "" ]; then
+
+            temp="User \"$NEW_USERNAME\" is exist"
+            printf "${RED}${temp}!${NC}\n"
+
+            IS_USER_EXIST=true  
+            
+        else
+
+            IS_USER_EXIST=false
+            IS_CONTINUE_CREATE_USER=false
+            
+        fi
+
+        rm $FILE_TMP
+
+    }
+
     temp="Create sudo user"
     printf "${CYAN}${temp}:${NC}\n"
 
-    is_continue=false
+    IS_CONTINUE_CREATE_USER=true
 
-    while [ $is_continue = false ]; do
+    while [ $IS_CONTINUE_CREATE_USER = true ] || [ $IS_USER_EXIST = true ]; do
 
         # Check new username
         read -p "Enter username: " NEW_USERNAME
 
         # Check if user exist
-        is_user_exist
+        check_user_exist
 
     done
 
@@ -304,30 +318,6 @@ create_sudo_user() {
     
     # Add to sudo group
     sudo usermod -aG sudo $NEW_USERNAME
-
-}
-
-
-# Check if user exist
-is_user_exist() {
-
-    id -u "$NEW_USERNAME" &> $FILE_TMP
-    temp1=$(cat $FILE_TMP | grep id)
-
-    if [ "$temp1" == "" ]; then
-
-        temp="User \"$NEW_USERNAME\" is exist"
-        printf "${RED}${temp}!${NC}\n"
-
-        is_continue=false  
-        
-    else
-
-        is_continue=true
-          
-    fi
-
-    rm $FILE_TMP
 
 }
 
@@ -381,7 +371,194 @@ update_and_upgrade() {
 }
 
 
+# -------------------------------------------------------------------
+
+# SSH
+
+# Change the SSH Port
+change_ssh_port() {
+
+    # Ask if user want to change the SSH port
+    ask_ssh_port() {
+
+        TEMP_PRINT="Change SSH default port? [Y/n] "
+        read -p "$TEMP_PRINT" USER_OPTION_SSH_PORT
+
+        if [ "$USER_OPTION_SSH_PORT" == "n" ] || [ "$USER_OPTION_SSH_PORT" == "N" ]; then
+
+            TEMP_PRINT="SSH port will NOT be changed"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            is_change_ssh_port=false
+
+        else
+
+            TEMP_PRINT="SSH port WILL be changed"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            
+            is_change_ssh_port=true
+
+        fi
+
+    }
+
+    ask_ssh_port
+
+    if [ "$is_change_ssh_port" == true ]; then
+
+        read -p "Enter the new port [default: $DEFAULT_NEW_SSH_PORT] " USER_INPUT_NEW_SSH_PORT
+
+        TEMP_MESSAGE="Using default value"
+        TEMP_PRINT="${PURPLE}${TEMP_MESSAGE}...${NC}\n"
+
+        if [ "$USER_INPUT_NEW_SSH_PORT" == "" ]; then
+            printf "$TEMP_PRINT"
+            USER_INPUT_NEW_SSH_PORT="$DEFAULT_NEW_SSH_PORT"
+        fi
+    
+        # Change the default value
+        TEMP_PRINT="Change the default value"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo sed -i "s/#Port 22/Port $USER_INPUT_NEW_SSH_PORT/g" /etc/ssh/sshd_config
+        sudo systemctl restart ssh
+    
+        # Allow the new port in firewall
+        TEMP_PRINT="Allow the new port in firewall"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo ufw allow $USER_INPUT_NEW_SSH_PORT/tcp
+    
+    fi
+
+}
+
+
+# Disable password authentication on SSH
+disable_ssh_password_auth() {
+
+    # Ask if user want to disable password authentication on SSH
+    ask_disable_ssh_password_auth() {
+
+        TEMP_PRINT="Disable password authentication on SSH? [Y/n] "
+        read -p "$TEMP_PRINT" USER_OPTION_SSH_PASSWORD_AUTH
+
+        if [ "$USER_OPTION_SSH_PASSWORD_AUTH" == "n" ] || [ "$USER_OPTION_SSH_PASSWORD_AUTH" == "N" ]; then
+
+            TEMP_PRINT="Password authentication on SSH will NOT be disabled"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            is_disable_ssh_password_auth=false
+
+        else
+
+            TEMP_PRINT="Password authentication on SSH will be DISABLED"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            
+            is_disable_ssh_password_auth=true
+
+        fi
+
+    }
+
+    # Ask if user already copy the Public Key to Authorized Keys
+    ask_copy_publickey_to_authorizedkey() {
+
+        TEMP_PRINT="Already copy the Public Key to Authorized Keys? [y/N] "
+        read -p "$TEMP_PRINT" USER_OPTION_COPY_PUBLICKEY
+
+        if [ "$USER_OPTION_COPY_PUBLICKEY" == "y" ] || [ "$USER_OPTION_COPY_PUBLICKEY" == "Y" ]; then
+
+            is_continue_disable_ssh_password_auth=true
+
+        else
+
+            TEMP_PRINT="Please copy the Public Key to Authorized Keys"
+            printf "${RED}${TEMP_PRINT}...${NC}\n"
+
+            exit
+
+        fi
+
+    }
+
+    ask_disable_ssh_password_auth
+
+    if [ "$is_disable_ssh_password_auth" == true ]; then ask_copy_publickey_to_authorizedkey; fi
+
+    if [ "$is_disable_ssh_password_auth" == true ] && [ "$is_continue_disable_ssh_password_auth" == true ]; then
+    
+        # Change the default value
+        sudo sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
+        sudo systemctl restart ssh
+
+    fi
+
+}
+
+
+# Disable root login on SSH
+disable_ssh_root_login() {
+
+    # Ask if user want to disable root login on SSH
+    ask_disable_ssh_root_login() {
+
+        TEMP_PRINT="Disable root login on SSH? [Y/n] "
+        read -p "$TEMP_PRINT" USER_OPTION_SSH_ROOT_LOGIN
+
+        if [ "$USER_OPTION_SSH_ROOT_LOGIN" == "n" ] || [ "$USER_OPTION_SSH_ROOT_LOGIN" == "N" ]; then
+
+            TEMP_PRINT="Root login on SSH will NOT be disabled"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            is_disable_ssh_root_login=false
+
+        else
+
+            TEMP_PRINT="Root login on SSH will be DISABLED"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            
+            is_disable_ssh_root_login=true
+
+        fi
+        
+    }
+
+    ask_disable_ssh_root_login
+
+    if [ "$is_disable_ssh_root_login" == true ]; then
+    
+        # Change the default value
+        sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
+        sudo sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config
+        sudo systemctl restart ssh
+
+    fi
+
+}
+
+
 # ============================ DEV-TOOLS =============================
+
+# Install developing apps
+install_dev_tools() {
+
+    # Essential
+    install_vscode            # Install Visual Studio Code
+    install_sqlitebrowser     # Install SQLite Browser
+    install_mysqlworkbench    # Install MySQL Workbench
+    install_postman           # Install Postman
+
+    # Additional
+    install_filezilla         # Install FileZilla
+    install_tree              # Install tree
+    install_rename            # Install rename
+    install_imagemagick       # Install Imagemagick
+
+}
+
+
+# -------------------------------------------------------------------
 
 # Install Visual Studio Code
 install_vscode() {
@@ -517,37 +694,15 @@ install_postman() {
 }
 
 
-# ============================= OTHERS ===============================
+# -------------------------------------------------------------------
 
-# Install OpenSSH
-install_openssh() {
+# Install FileZilla
+install_filezilla() {
 
-    TEMP_PRINT="Install OpenSSH"
+    TEMP_PRINT="Install FileZilla"
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
-    sudo apt install openssh-server -y
-
-}
-
-
-# Install htop
-install_htop() {
-
-    TEMP_PRINT="Install htop"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install htop -y
-
-}
-
-
-# Install net-tools
-install_nettools() {
-
-    TEMP_PRINT="Install net-tools"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install net-tools -y
+    sudo apt install filezilla -y
 
 }
 
@@ -585,13 +740,45 @@ install_imagemagick() {
 }
 
 
-# Install FileZilla
-install_filezilla() {
+# ============================= OTHERS ===============================
 
-    TEMP_PRINT="Install FileZilla"
+# Install other apps
+install_other_apps() {
+
+    install_openssh                 # Install OpenSSH
+    install_htop                    # Install htop
+    install_git                     # Install Git
+    install_nettools                # Install net-tools
+    install_python_dependencies     # Install Python dependencies
+    install_docker                  # Install Docker
+    install_nginx                   # Install NGINX
+    install_certbot                 # Install Certbot
+    install_redis                   # Install Redis
+    install_postgresql              # Install PostgreSQL
+
+}
+
+
+# -------------------------------------------------------------------
+
+# Install OpenSSH
+install_openssh() {
+
+    TEMP_PRINT="Install OpenSSH"
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
-    sudo apt install filezilla -y
+    sudo apt install openssh-server -y
+
+}
+
+
+# Install htop
+install_htop() {
+
+    TEMP_PRINT="Install htop"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install htop -y
 
 }
 
@@ -603,6 +790,17 @@ install_git() {
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     sudo apt install git -y
+
+}
+
+
+# Install net-tools
+install_nettools() {
+
+    TEMP_PRINT="Install net-tools"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install net-tools -y
 
 }
 
@@ -726,6 +924,20 @@ install_postgresql() {
 
 # =========================== END SETUP =============================
 
+# End Setup
+end_setup() {
+
+    # Enable the firewall
+    enable_firewall
+
+    # Reboot the system 
+    reboot_system       
+
+}
+
+
+# -------------------------------------------------------------------
+
 # Enable the firewall
 enable_firewall() {
 
@@ -768,10 +980,31 @@ reboot_system() {
 
         printf "${TEMP_PRINT}...${NC} ${GREEN}OK${NC}\n"
         sudo reboot now
+
     else
 
         TEMP_PRINT="Reboot the system canceled."
         printf "${RED}${TEMP_PRINT}${NC}\n"
+
+        exit
+
+    fi
+
+}
+
+
+# ============================= OTHERS ==============================
+
+# Check if user want to continue the process
+ask_continue_process() {
+
+    TEMP_PRINT="Continue process? [Y/n] "
+    read -p "$TEMP_PRINT" USER_OPTION_CONTINUE_PROCESS
+
+    if [ "$USER_OPTION_CONTINUE_PROCESS" == "n" ] || [ "$USER_OPTION_CONTINUE_PROCESS" == "N" ]; then
+
+        TEMP_PRINT="Process aborted"
+        printf "${RED}${TEMP_PRINT}...${NC}\n"
 
         exit
 

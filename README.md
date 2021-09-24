@@ -1,9 +1,10 @@
 # Dev Setup
 
-Set up an environment for the development, testing, and staging.
+Set up an environment for the development, testing, staging, and production.
 
 - Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
 - Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **staging** environment.
+- Setup in physical server for **production** environment.
 
 ## How to Start
 
@@ -11,16 +12,16 @@ Set up an environment for the development, testing, and staging.
 
 **Desktop**
 
-1. Download and install the [guest OS](#virtualbox-1) (clean install).
+1. Download and install[<sup>2</sup>](#footnotes) the [guest OS](#virtualbox-1).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/dev-setup/archive/refs/heads/main.zip) this project using the **host**.
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
-1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `1. Vbox (Desktop)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 **Server**
 
-1. Download and install the [guest OS](#virtualbox-1) ([clean install](docs/install-ubuntu-server.md)).
+1. Download and [install](docs/install-ubuntu-server.md)[<sup>3</sup>](#footnotes) the [guest OS](#virtualbox-1).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Fix Error](#fix-error) in the **guest**.
 1. Clone this project and open the folder.
@@ -28,11 +29,11 @@ Set up an environment for the development, testing, and staging.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`sudo ./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox (Server)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 ### DigitalOcean
 
-1. Create a new droplet with the [required specification](#digitalocean-1).
+1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` for the **Authentication**.
 1. Login to the server.
     ```bash
     ssh root@SERVER_IP_ADDRESS     # login using SSH
@@ -42,7 +43,20 @@ Set up an environment for the development, testing, and staging.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`./setup.sh`](setup.sh) to [initiate](#init-setup) the setup and install the [required applications](#install-required-applications).
+1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
+
+
+### Physical Server
+
+1. Download and [install](docs/install-ubuntu-server.md)[<sup>4</sup>](#footnotes) the OS.
+1. [User Setup](#user-setup).
+1. (Optional) [Proxy Setup](#proxy-setup).
+1. Clone this project and open the folder.
+    ```bash
+    git clone https://github.com/ba1x/dev-setup.git
+    cd dev-setup
+    ```
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `4. Physical Server` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup. 
 
 ### (Optional) After Finish Setup
 
@@ -62,14 +76,14 @@ Operating system that already tested on VirtualBox:
 **Settings**
 
 | No | Type | CPU | RAM | HDD | VGA | Network | Tested? |
-|---|---|---|---|---|---|---|---|
+|:---:|---|---|---|---|---|:---:|:---:|
 | 1 | Desktop | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
 | 2 | Server | 1 CPU | 1024 MB | 10 GB | 16 MB | Bridged | ✅ |
 
 **Profile**
 
 | No | VM Name | Name | Hostname | Username | Password |
-|---|---|---|---|---|---|
+|:---:|---|:---:|---|:---:|:---:|
 | 1 | dev-labvm | dev | labvm | dev | dev |
 | 2 | dev-labvm-server | dev | labvm-server | dev | dev | 
 
@@ -80,8 +94,18 @@ Operating system that already tested on DigitalOcean:
 1. [Ubuntu 20.04 (LTS) x64](https://ubuntu.com/download/server)
 
 | No | Type | CPU | RAM | SSD | Tested? | 
-|---|---|---|---|---|---|
+|:---:|---|---|---|---|:---:|
 | 1 | Shared CPU (Basic) | 1 CPU | 1 GB | 25 GB | ✅ |
+
+### Physical Server
+
+Operating system that already tested on physical server:
+
+1. [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server)
+
+| No | Type | CPU | RAM | HDD | Tested? | 
+|:---:|---|---|---|---|:---:|
+| 1 | Server | 8 CPUs | 8 GB | 1 TB | ✅ |
 
 ## User Setup
 
@@ -148,205 +172,41 @@ Open **Terminal** and run the following commands.
     
 After finish installing, please remove the **`Guest Addition CD Image`**
 
-## Init Setup
 
-- Create sudo user
-    ```bash
-    # Create the user
-    sudo adduser $NEW_USERNAME
-    # Add to sudo group
-    sudo usermod -aG sudo $NEW_USERNAME
-    ```
-- Copy SSH authorized keys
-    ```bash
-    mkdir /home/$NEW_USERNAME/.ssh
-    cp /root/.ssh/authorized_keys /home/$NEW_USERNAME/.ssh/
-    chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
-    ```
-- Set timezone
-    ```bash
-    # Set timezone
-    timedatectl set-timezone $TIMEZONE
-    ```
-- Update and upgrade the packages
-    ```bash
-    # Update the package lists that need upgrading
-    sudo apt update
-    # Upgrade packages and its dependencies
-    sudo apt dist-upgrade
-    ```
+## Proxy Setup
 
-## Install Required Applications
-
-### Dev Tools
-
-- Install Visual Studio Code
+- Open environment file
     ```bash
-    # Install the dependencies
-    sudo apt install software-properties-common apt-transport-https wget
-    # Import the Microsoft GPG key
-    wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-    # Enable the repository and update the package index
-    sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    sudo apt update
-    # Install the package
-    sudo apt install code
+    sudo nano /etc/environment
     ```
-- [Install SQLite Browser](https://sqlitebrowser.org/dl/)
+    Then, add the following codes:
     ```bash
-    # Install SQLite Browser
-    sudo apt install sqlitebrowser
-    ```
-- [Install MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
-    ```bash
-    # Install the dependencies of MySQL Workbench
-    sudo apt install libopengl0 libpcrecpp0v5 libproj15 libzip5
-    # Download installer
-    wget https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community_8.0.26-1ubuntu20.04_amd64.deb
-    # Install the MySQL Workbench
-    sudo dpkg -i mysql-*
-    # Remove the installer after installation finish
-    rm mysql-*
-
-    ```
-- [Install Postman](https://speedysense.com/install-postman-on-ubuntu-20-04/)
-    ```bash
-    # Download Postman installer
-    wget --content-disposition https://dl.pstmn.io/download/latest/linux
-    # Extract Postman package
-    tar -xzf Postman-linux-*
-    # Move Postman directory to `opt/` directory
-    sudo mv Postman /opt
-    # Create a Symbolic Links
-    sudo ln -s /opt/Postman/Postman /usr/local/bin/postman
-    # Create a desktop file for Postman app
-    DESKTOP_FILE="/usr/share/applications/postman.desktop"
-    echo "[Desktop Entry]" >> $DESKTOP_FILE
-    echo "Type=Application" >> $DESKTOP_FILE
-    echo "Name=Postman" >> $DESKTOP_FILE
-    echo "Icon=/opt/Postman/app/resources/app/assets/icon.png" >> $DESKTOP_FILE
-    echo "Exec=\"/opt/Postman/Postman\"" >> $DESKTOP_FILE
-    echo "Comment=Postman GUI" >> $DESKTOP_FILE
-    echo "Categories=Development;Code;" >> $DESKTOP_FILE
-    # Remove the installer after installation finish
-    rm Postman-linux-*
-    ```
-
-### Others
-
-- Install OpenSSH
-    ```bash
-    # Install OpenSSH
-    sudo apt install openssh-server
-    ``` 
-- Install htop
-    ```bash
-    # Install htop
-    sudo apt install htop
-    ```
-- Install net-tools
-    ```bash
-    # Install net tools
-    sudo apt install net-tools
-    ```
-- Install tree
-    ```bash
-    # Install tree
-    sudo apt install tree
-    ```
-- Install rename
-    ```bash
-    # Install rename
-    sudo apt install rename
-    ```
-- Install Imagemagick
-    ```bash
-    # Install Imagemagick
-    sudo apt install imagemagick
-    ```
-- Install FileZilla
-    ```bash
-    # Install FileZilla
-    sudo apt install filezilla
-    ```
-- Install Git
-    ```bash
-    # Install git
-    sudo apt install git
-    ```
-- Install Python dependencies
-    ```bash
-    # Install Python environment
-    sudo apt install python3.8-venv
-    # Install PIP
-    sudo apt install python3-pip
-    # Install Django Admin
-    sudo apt install python3-django
-    ```
-- Install Docker
-    ```bash
-    # Install the dependencies of Docker
-    sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release
-    # Add Docker’s official GPG key
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    # Set up the stable repository of Docker and update the package index
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt update
-    # Install the latest version of Docker Engine and container
-    sudo apt install docker-ce docker-ce-cli containerd.io
-    # Install Docker Compose
-    sudo apt install docker-compose
-    # Adding user to the Docker group
-    sudo usermod -a -G docker $USER
-    ```
-- Install NGINX
-    ```bash
-    # Install NGINX
-    sudo apt install nginx
-    ```
-- Install Certbot and it’s NGINX plugin
-    ```bash
-    # Install Certbot and it’s NGINX plugin
-    sudo apt install certbot python3-certbot-nginx
-    ```
-- Install Redis
-    ```bash
-    # Install Redis
-    sudo apt install redis-server
-    ```
-- Install PostgreSQL
-    ```bash
-    # Install PostgreSQL
-    sudo apt install libpq-dev postgresql postgresql-contrib
-    ```
-
-## End Setup
-
-- Enable the firewall
-    ```bash
-    # Enable the Uncomplicated Firewall (UFW)
-    sudo ufw enable
-    # Allow OpenSSH
-    sudo ufw allow OpenSSH
-    # Allow NGINX
-    sudo ufw allow 'Nginx Full'
-    ```
-- Reboot the system
-    ```bash
-    # Reboot the system
-    # Some settings or installation need reboot to be affected.
-    sudo reboot now
+    http_proxy="http://$USERNAME:$PASSWORD@$SERVER:8080/"
+    https_proxy="http://$USERNAME:$PASSWORD@$SERVER:8080/"
+    ftp_proxy="http://$USERNAME:$PASSWORD@$SERVER:8080/"
+    no_proxy="127.0.0.1,localhost"
     ```
 
 ## Footnotes
 
 1. [VirtualBox 6.1.26 r145957 (Qt5.6.2)](https://www.virtualbox.org/wiki/Downloads)
 2. Minimal Installation
-3. [Partition](docs/ubuntu-filesystem-and-partitions.md)
+3. [Partition](docs/ubuntu-filesystem-and-partitions.md) for `10 GB` HDD/SSD and `1 GB` RAM.
     ```bash
     /        7.0 GB  ext4
     /boot    500 MB  ext4
     /home    500 MB  ext4
     /var     1.0 GB  ext4
     SWAP     1.0 GB  swap
+    ```
+3. [Partition](docs/ubuntu-filesystem-and-partitions.md) for `1 TB` HDD/SSD and `8GB` RAM.
+    ```bash
+    /           240 GB  ext4
+    /boot       2.5 GB  ext4
+    /home       500 GB  ext4
+    /srv        2.5 GB  ext4
+    /usr        100 GB  ext4
+    /var         20 GB  ext4
+    /var/lib     50 GB  ext4
+    SWAP         16 GB  swap
     ```
