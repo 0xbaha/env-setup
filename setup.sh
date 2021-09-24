@@ -141,7 +141,7 @@ setup_vbox_desktop() {
     printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
 
     # Init Setup
-    init_setup
+    basic_setup
 
     # Install Required Apps
     install_dev_tools
@@ -160,7 +160,7 @@ setup_vbox_server() {
     printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
 
     # Init Setup
-    init_setup
+    basic_setup
 
     # Install Required Apps
     install_other_apps
@@ -179,7 +179,7 @@ setup_cloud_digitalocean() {
 
     # Init Setup
     create_user
-    init_setup
+    basic_setup
 
     # SSH settings
     ssh_settings
@@ -201,7 +201,7 @@ setup_physical_server() {
     printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
 
     # Init Setup
-    init_setup
+    basic_setup
 
     # SSH settings
     ssh_settings
@@ -230,8 +230,8 @@ create_user() {
 }
 
 
-# Init Setup 
-init_setup() {
+# Basic Setup 
+basic_setup() {
 
     # Set timezone
     set_timezone
