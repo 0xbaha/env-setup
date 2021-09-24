@@ -12,7 +12,7 @@ Set up an environment for the development, testing, staging, and production.
 
 **Desktop**
 
-1. Download and install the [guest OS](#virtualbox-1).
+1. Download and install[<sup>2</sup>](#footnotes) the [guest OS](#virtualbox-1).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/dev-setup/archive/refs/heads/main.zip) this project using the **host**.
