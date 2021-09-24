@@ -848,6 +848,7 @@ change_ssh_port() {
         printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
         sudo sed -i "s/#Port 22/Port $USER_INPUT_NEW_SSH_PORT/g" /etc/ssh/sshd_config
+        sudo systemctl restart ssh
     
         # Allow the new port in firewall
         TEMP_PRINT="Allow the new port in firewall"
@@ -893,7 +894,8 @@ disable_ssh_password_auth() {
     
         # Change the default value
         sudo sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
-    
+        sudo systemctl restart ssh
+
     fi
 
 }
@@ -933,6 +935,7 @@ disable_ssh_root_login() {
         # Change the default value
         sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
         sudo sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config
+        sudo systemctl restart ssh
 
     fi
 
