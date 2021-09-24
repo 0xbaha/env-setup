@@ -742,9 +742,9 @@ ssh_settings() {
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     TEMP_PRINT="Edit SSH settings? [Y/n] "
-    read -p "$TEMP_PRINT" user_option_ssh_settings
+    read -p "$TEMP_PRINT" USER_OPTION_SSH_SETTINGS
 
-    if [ "$user_option_ssh_settings" == "n" ] || [ "$user_option_ssh_settings" == "N" ]; then
+    if [ "$USER_OPTION_SSH_SETTINGS" == "n" ] || [ "$USER_OPTION_SSH_SETTINGS" == "N" ]; then
 
         TEMP_PRINT="SSH settings will NOT be edited"
         printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
@@ -803,9 +803,9 @@ change_ssh_port() {
     ask_ssh_port() {
 
         TEMP_PRINT="Change SSH default port? [Y/n] "
-        read -p "$TEMP_PRINT" user_option_ssh_port
+        read -p "$TEMP_PRINT" USER_OPTION_SSH_PORT
 
-        if [ "$user_option_ssh_port" == "n" ] || [ "$user_option_ssh_port" == "N" ]; then
+        if [ "$USER_OPTION_SSH_PORT" == "n" ] || [ "$USER_OPTION_SSH_PORT" == "N" ]; then
 
             TEMP_PRINT="SSH port will NOT be changed"
             printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
@@ -864,9 +864,9 @@ disable_ssh_password_auth() {
     ask_disable_ssh_password_auth() {
 
         TEMP_PRINT="Disable password authentication on SSH? [Y/n] "
-        read -p "$TEMP_PRINT" user_option_ssh_password_auth
+        read -p "$TEMP_PRINT" USER_OPTION_SSH_PASSWORD_AUTH
 
-        if [ "$user_option_ssh_password_auth" == "n" ] || [ "$user_option_ssh_password_auth" == "N" ]; then
+        if [ "$USER_OPTION_SSH_PASSWORD_AUTH" == "n" ] || [ "$USER_OPTION_SSH_PASSWORD_AUTH" == "N" ]; then
 
             TEMP_PRINT="Password authentication on SSH will NOT be disabled"
             printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
@@ -906,9 +906,9 @@ disable_ssh_root_login() {
     ask_disable_ssh_root_login() {
 
         TEMP_PRINT="Disable root login on SSH? [Y/n] "
-        read -p "$TEMP_PRINT" user_option_ssh_root_login
+        read -p "$TEMP_PRINT" USER_OPTION_SSH_ROOT_LOGIN
 
-        if [ "$user_option_ssh_root_login" == "n" ] || [ "$user_option_ssh_root_login" == "N" ]; then
+        if [ "$USER_OPTION_SSH_ROOT_LOGIN" == "n" ] || [ "$USER_OPTION_SSH_ROOT_LOGIN" == "N" ]; then
 
             TEMP_PRINT="Root login on SSH will NOT be disabled"
             printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
