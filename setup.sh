@@ -28,7 +28,6 @@ DNS_NAMESERVER="208.67.222.222"
 
 # OTHERS
 
-is_continue=false
 is_change_ssh_port=false
 FILE_SETUP="setup.sh"
 FILE_TMP="_tmp.txt"
@@ -49,8 +48,8 @@ main() {
 
     if [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "" ] && [ "$2" == "" ]; then
 
-        is_sudo_user
-        if [ "$is_continue" = true ]; then ask_user_option; fi
+        check_sudo_user
+        if [ "$IS_SUDO_USER" = true ]; then ask_user_option; fi
     
     
     # If the command is not valid, an error message will be shown
@@ -71,7 +70,7 @@ main() {
 # ============================== START ==============================
 
 # Check if User is in sudo mode
-is_sudo_user() {
+check_sudo_user() {
     
     if [ `whoami` != root ]; then
     
@@ -82,7 +81,7 @@ is_sudo_user() {
 
     else
     
-        is_continue=true
+        IS_SUDO_USER=true
         
     fi
 
@@ -94,18 +93,21 @@ ask_user_option() {
 
     ask_user() {
 
-        printf "Which type?\n  1. VBox (Desktop)\n  2. VBox (Server) / Bare-metal\n  3. Cloud (DigitalOcean)\n"
-        read -p "Option: " user_option
+        TEMP_PRINT="Which type?\n  1. VBox (Desktop)\n  2. VBox (Server) / Bare-metal\n  3. Cloud (DigitalOcean)\n"
+        printf "$TEMP_PRINT"
 
-        if [ "$user_option" == "1" ]; then
+        TEMP_PRINT="Option: "
+        read -p "$TEMP_PRINT" USER_OPTION
+
+        if [ "$USER_OPTION" == "1" ]; then
 
             setup_vbox_desktop
 
-        elif [ "$user_option" == "2" ]; then
+        elif [ "$USER_OPTION" == "2" ]; then
 
             setup_vbox_server
 
-        elif [ "$user_option" == "3" ]; then
+        elif [ "$USER_OPTION" == "3" ]; then
 
             setup_cloud_digitalocean
 
@@ -120,7 +122,7 @@ ask_user_option() {
 
     ask_user
 
-    while [ "$user_option" != "1" ] && [ "$user_option" != "2" ] && [ "$user_option" != "3" ]; do
+    while [ "$USER_OPTION" != "1" ] && [ "$USER_OPTION" != "2" ] && [ "$USER_OPTION" != "3" ]; do
         ask_user
     done
 
@@ -202,6 +204,9 @@ create_user() {
 # Init Setup 
 init_setup() {
 
+    # SSH settings
+    ssh_settings
+    
     # Set timezone
     set_timezone
 
@@ -216,9 +221,6 @@ end_setup() {
 
     # Enable the firewall
     enable_firewall
-
-    # SSH settings
-    ssh_settings
 
     # Reboot the system 
     reboot_system       
@@ -269,15 +271,13 @@ create_sudo_user() {
     temp="Create sudo user"
     printf "${CYAN}${temp}:${NC}\n"
 
-    is_continue=false
-
-    while [ $is_continue = false ]; do
+    while [ $IS_USER_EXIST = true ]; do
 
         # Check new username
         read -p "Enter username: " NEW_USERNAME
 
         # Check if user exist
-        is_user_exist
+        check_user_exist
 
     done
 
@@ -291,7 +291,7 @@ create_sudo_user() {
 
 
 # Check if user exist
-is_user_exist() {
+check_user_exist() {
 
     id -u "$NEW_USERNAME" &> $FILE_TMP
     temp1=$(cat $FILE_TMP | grep id)
@@ -301,11 +301,11 @@ is_user_exist() {
         temp="User \"$NEW_USERNAME\" is exist"
         printf "${RED}${temp}!${NC}\n"
 
-        is_continue=false  
+        IS_USER_EXIST=true  
         
     else
 
-        is_continue=true
+        IS_USER_EXIST=false
           
     fi
 
@@ -325,6 +325,39 @@ copy_ssh_authorized_keys() {
     chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
 
     printf "${temp}...${NC} ${GREEN}OK${NC}\n"
+
+}
+
+
+# SSH settings
+ssh_settings() {
+
+    TEMP_PRINT="SSH settings"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    TEMP_PRINT="Edit SSH settings? [Y/n] "
+    read -p "$TEMP_PRINT" USER_OPTION_SSH_SETTINGS
+
+    if [ "$USER_OPTION_SSH_SETTINGS" == "n" ] || [ "$USER_OPTION_SSH_SETTINGS" == "N" ]; then
+
+        TEMP_PRINT="SSH settings will NOT be edited"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    else
+
+        # Change the SSH Port
+        change_ssh_port
+
+        # Disable password authentication on SSH
+        disable_ssh_password_auth
+
+        # Disable root login on SSH
+        disable_ssh_root_login
+
+        # Check if user want to continue the process
+        ask_continue_process
+
+    fi
 
 }
 
@@ -735,36 +768,6 @@ enable_firewall() {
 }
 
 
-# SSH settings
-ssh_settings() {
-
-    TEMP_PRINT="SSH settings"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    TEMP_PRINT="Edit SSH settings? [Y/n] "
-    read -p "$TEMP_PRINT" USER_OPTION_SSH_SETTINGS
-
-    if [ "$USER_OPTION_SSH_SETTINGS" == "n" ] || [ "$USER_OPTION_SSH_SETTINGS" == "N" ]; then
-
-        TEMP_PRINT="SSH settings will NOT be edited"
-        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    else
-
-        # Change the SSH Port
-        change_ssh_port
-
-        # Disable password authentication on SSH
-        disable_ssh_password_auth
-
-        # Disable root login on SSH
-        disable_ssh_root_login
-
-    fi
-
-}
-
-
 # Reboot the system
 reboot_system() {
 
@@ -780,6 +783,7 @@ reboot_system() {
 
         printf "${TEMP_PRINT}...${NC} ${GREEN}OK${NC}\n"
         sudo reboot now
+
     else
 
         TEMP_PRINT="Reboot the system canceled."
@@ -938,6 +942,26 @@ disable_ssh_root_login() {
         sudo sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config
 
     fi
+
+}
+
+
+# ============================= OTHERS ==============================
+
+# Check if user want to continue the process
+ask_continue_process() {
+
+    TEMP_PRINT="Continue process? [Y/n] "
+    read -p "$TEMP_PRINT" USER_OPTION_CONTINUE_PROCESS
+
+    if [ "$USER_OPTION_CONTINUE_PROCESS" == "n" ] || [ "$USER_OPTION_CONTINUE_PROCESS" == "N" ]; then
+
+        TEMP_PRINT="Process aborted"
+        printf "${RED}${TEMP_PRINT}...${NC}\n"
+
+        exit
+
+    else
 
 }
 
