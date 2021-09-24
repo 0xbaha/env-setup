@@ -29,7 +29,6 @@
     sudo dpkg -i mysql-*
     # Remove the installer after installation finish
     rm mysql-*
-
     ```
 - [Install Postman](https://speedysense.com/install-postman-on-ubuntu-20-04/)
     ```bash
@@ -57,6 +56,7 @@
     ```bash
     # Install FileZilla
     sudo apt install filezilla
+    ```
 - Install tree
     ```bash
     # Install tree
