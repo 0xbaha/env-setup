@@ -205,6 +205,9 @@ init_setup() {
 
     # SSH settings
     ssh_settings
+
+    # Check if user want to continue the process
+    ask_continue_process
     
     # Set timezone
     set_timezone
@@ -355,9 +358,6 @@ ssh_settings() {
 
         # Disable root login on SSH
         disable_ssh_root_login
-
-        # Check if user want to continue the process
-        ask_continue_process
 
     fi
 
