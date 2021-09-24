@@ -272,7 +272,7 @@ create_sudo_user() {
 
     IS_CONTINUE_CREATE_USER=true
 
-    while [ $IS_CONTINUE_CREATE_USER = true ]; do
+    while [ $IS_CONTINUE_CREATE_USER = true ] || [ $IS_USER_EXIST = true ]; do
 
         # Check new username
         read -p "Enter username: " NEW_USERNAME
@@ -302,11 +302,12 @@ check_user_exist() {
         temp="User \"$NEW_USERNAME\" is exist"
         printf "${RED}${temp}!${NC}\n"
 
-        IS_CONTINUE_CREATE_USER=false  
+        IS_USER_EXIST=true  
         
     else
 
-        IS_CONTINUE_CREATE_USER=true
+        IS_USER_EXIST=false
+        IS_CONTINUE_CREATE_USER=false
           
     fi
 
