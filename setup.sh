@@ -92,7 +92,7 @@ ask_user_option() {
 
     ask_user() {
 
-        TEMP_PRINT="Which type?\n  1. VBox (Desktop)\n  2. VBox (Server) / Bare-metal\n  3. Cloud (DigitalOcean)\n"
+        TEMP_PRINT="Which type?\n  1. VBox (Desktop)\n  2. VBox (Server)\n  3. Cloud (DigitalOcean)\n  4. Physical Server\n"
         printf "$TEMP_PRINT"
 
         TEMP_PRINT="Option: "
@@ -109,6 +109,10 @@ ask_user_option() {
         elif [ "$USER_OPTION" == "3" ]; then
 
             setup_cloud_digitalocean
+
+        elif [ "$USER_OPTION" == "4" ]; then
+
+            setup_physical_server
 
         else
 
@@ -133,7 +137,7 @@ ask_user_option() {
 # Setup for desktop
 setup_vbox_desktop() {
 
-    TEMP_PRINT="Setup for desktop"
+    TEMP_PRINT="Setup for VBox (desktop)"
     printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
 
     # Init Setup
@@ -152,7 +156,7 @@ setup_vbox_desktop() {
 # Setup for server
 setup_vbox_server() {
 
-    TEMP_PRINT="Setup for server"
+    TEMP_PRINT="Setup for VBox (server)"
     printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
 
     # Init Setup
@@ -176,6 +180,32 @@ setup_cloud_digitalocean() {
     # Init Setup
     create_user
     init_setup
+
+    # SSH settings
+    ssh_settings
+    ask_continue_process
+
+    # Install Required Apps
+    install_other_apps
+
+    # End Setup
+    end_setup
+
+}
+
+
+# Setup for physical server
+setup_physical_server() {
+
+    TEMP_PRINT="Setup for physical server"
+    printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
+
+    # Init Setup
+    init_setup
+
+    # SSH settings
+    ssh_settings
+    ask_continue_process
 
     # Install Required Apps
     install_other_apps
@@ -203,10 +233,6 @@ create_user() {
 # Init Setup 
 init_setup() {
 
-    # SSH settings
-    ssh_settings
-    ask_continue_process
-    
     # Set timezone
     set_timezone
 
