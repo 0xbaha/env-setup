@@ -899,7 +899,7 @@ disable_ssh_password_auth() {
         else
 
             TEMP_PRINT="Please copy the Public Key to Authorized Keys"
-            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            printf "${RED}${TEMP_PRINT}...${NC}\n"
 
             exit
 
