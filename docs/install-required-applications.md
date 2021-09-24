@@ -53,24 +53,10 @@
     # Remove the installer after installation finish
     rm Postman-linux-*
     ```
-
-## Others
-
-- Install OpenSSH
+- Install FileZilla
     ```bash
-    # Install OpenSSH
-    sudo apt install openssh-server
-    ``` 
-- Install htop
-    ```bash
-    # Install htop
-    sudo apt install htop
-    ```
-- Install net-tools
-    ```bash
-    # Install net tools
-    sudo apt install net-tools
-    ```
+    # Install FileZilla
+    sudo apt install filezilla
 - Install tree
     ```bash
     # Install tree
@@ -86,15 +72,27 @@
     # Install Imagemagick
     sudo apt install imagemagick
     ```
-- Install FileZilla
+## Others
+
+- Install OpenSSH
     ```bash
-    # Install FileZilla
-    sudo apt install filezilla
+    # Install OpenSSH
+    sudo apt install openssh-server
+    ``` 
+- Install htop
+    ```bash
+    # Install htop
+    sudo apt install htop
     ```
 - Install Git
     ```bash
     # Install git
     sudo apt install git
+    ```
+- Install net-tools
+    ```bash
+    # Install net tools
+    sudo apt install net-tools
     ```
 - Install Python dependencies
     ```bash
