@@ -29,6 +29,9 @@ DNS_NAMESERVER="208.67.222.222"
 # OTHERS
 
 is_change_ssh_port=false
+is_disable_ssh_password_auth=false
+is_disable_ssh_root_login=false
+IS_USER_EXIST=false
 FILE_SETUP="setup.sh"
 FILE_TMP="_tmp.txt"
 
