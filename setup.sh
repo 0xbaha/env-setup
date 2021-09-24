@@ -961,7 +961,7 @@ ask_continue_process() {
 
         exit
 
-    else
+    fi
 
 }
 
