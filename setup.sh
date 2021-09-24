@@ -205,8 +205,6 @@ init_setup() {
 
     # SSH settings
     ssh_settings
-
-    # Check if user want to continue the process
     ask_continue_process
     
     # Set timezone
