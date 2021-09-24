@@ -4,7 +4,7 @@ Set up an environment for the development, testing, staging, and production.
 
 - Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
 - Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **staging** environment.
-- Setup in dedicated/bare-metal server for **production** environment.
+- Setup in physical server for **production** environment.
 
 ## How to Start
 
@@ -46,7 +46,7 @@ Set up an environment for the development, testing, staging, and production.
 1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 
-### Dedicated/Bare-metal
+### Physical Server
 
 1. Download and [install](docs/install-ubuntu-server.md)[<sup>4</sup>](#footnotes) the OS.
 1. [User Setup](#user-setup).
@@ -56,7 +56,7 @@ Set up an environment for the development, testing, staging, and production.
     git clone https://github.com/ba1x/dev-setup.git
     cd dev-setup
     ```
-1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `4. Dedicated or Bare-metal server` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup. 
+1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `4. Physical Server` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup. 
 
 ### (Optional) After Finish Setup
 
@@ -97,9 +97,9 @@ Operating system that already tested on DigitalOcean:
 |:---:|---|---|---|---|:---:|
 | 1 | Shared CPU (Basic) | 1 CPU | 1 GB | 25 GB | ✅ |
 
-### Dedicated/Bare-metal
+### Physical Server
 
-Operating system that already tested on dedicated/bare-metal server:
+Operating system that already tested on physical server:
 
 1. [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server)
 
