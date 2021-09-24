@@ -838,8 +838,8 @@ change_ssh_port() {
 
         read -p "Enter the new port [default: $DEFAULT_NEW_SSH_PORT] " USER_INPUT_NEW_SSH_PORT
 
-        TEMP_PRINT="Using default value"
-        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+        TEMP_MESSAGE="Using default value"
+        TEMP_PRINT="${PURPLE}${TEMP_MESSAGE}...${NC}\n"
 
         if [ "$USER_INPUT_NEW_SSH_PORT" == "" ]; then
             printf "$TEMP_PRINT"
@@ -848,13 +848,13 @@ change_ssh_port() {
     
         # Change the default value
         TEMP_PRINT="Change the default value"
-        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
         sudo sed -i "s/#Port 22/Port $USER_INPUT_NEW_SSH_PORT/g" /etc/ssh/sshd_config
     
         # Allow the new port in firewall
         TEMP_PRINT="Allow the new port in firewall"
-        TEMP_PRINT="${PURPLE}${TEMP_PRINT}...${NC}\n"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
         sudo ufw allow $USER_INPUT_NEW_SSH_PORT/tcp
     
@@ -889,9 +889,6 @@ disable_ssh_password_auth() {
         fi
 
     }
-
-    TEMP_PRINT="Disable password authentication on SSH"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     ask_disable_ssh_password_auth
 
@@ -931,9 +928,6 @@ disable_ssh_root_login() {
         fi
         
     }
-
-    TEMP_PRINT="Disable root login on SSH"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     ask_disable_ssh_root_login
 
