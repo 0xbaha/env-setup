@@ -216,7 +216,7 @@ setup_physical_server() {
 }
 
 
-# -------------------------------------------------------------------
+# =========================== INIT SETUP ============================
 
 # Create User
 create_user() {
@@ -226,134 +226,6 @@ create_user() {
 
     # Copy SSH authorized keys
     copy_ssh_authorized_keys
-
-}
-
-
-# Basic Setup 
-basic_setup() {
-
-    # Set timezone
-    set_timezone
-
-    # Update/upgrade packages
-    update_and_upgrade
-
-}
-
-
-# End Setup
-end_setup() {
-
-    # Enable the firewall
-    enable_firewall
-
-    # Reboot the system 
-    reboot_system       
-
-}
-
-
-# Install developing apps
-install_dev_tools() {
-
-    # Essential
-    install_vscode            # Install Visual Studio Code
-    install_sqlitebrowser     # Install SQLite Browser
-    install_mysqlworkbench    # Install MySQL Workbench
-    install_postman           # Install Postman
-
-    # Additional
-    install_filezilla         # Install FileZilla
-    install_tree              # Install tree
-    install_rename            # Install rename
-    install_imagemagick       # Install Imagemagick
-
-}
-
-
-# Install other apps
-install_other_apps() {
-
-    install_openssh                 # Install OpenSSH
-    install_htop                    # Install htop
-    install_git                     # Install Git
-    install_nettools                # Install net-tools
-    install_python_dependencies     # Install Python dependencies
-    install_docker                  # Install Docker
-    install_nginx                   # Install NGINX
-    install_certbot                 # Install Certbot
-    install_redis                   # Install Redis
-    install_postgresql              # Install PostgreSQL
-
-}
-
-
-# =========================== INIT SETUP ============================
-
-# Create sudo user
-create_sudo_user() {
-
-    temp="Create sudo user"
-    printf "${CYAN}${temp}:${NC}\n"
-
-    IS_CONTINUE_CREATE_USER=true
-
-    while [ $IS_CONTINUE_CREATE_USER = true ] || [ $IS_USER_EXIST = true ]; do
-
-        # Check new username
-        read -p "Enter username: " NEW_USERNAME
-
-        # Check if user exist
-        check_user_exist
-
-    done
-
-    # Create the user
-    sudo adduser $NEW_USERNAME
-    
-    # Add to sudo group
-    sudo usermod -aG sudo $NEW_USERNAME
-
-}
-
-
-# Check if user exist
-check_user_exist() {
-
-    id -u "$NEW_USERNAME" &> $FILE_TMP
-    temp1=$(cat $FILE_TMP | grep id)
-
-    if [ "$temp1" == "" ]; then
-
-        temp="User \"$NEW_USERNAME\" is exist"
-        printf "${RED}${temp}!${NC}\n"
-
-        IS_USER_EXIST=true  
-        
-    else
-
-        IS_USER_EXIST=false
-        IS_CONTINUE_CREATE_USER=false
-          
-    fi
-
-    rm $FILE_TMP
-
-}
-
-
-# Copy SSH authorized keys
-copy_ssh_authorized_keys() {
-
-    temp="Copy SSH authorized keys"
-    printf "${CYAN}${temp}:${NC}\n"
-
-    mkdir /home/$NEW_USERNAME/.ssh
-    cp /root/.ssh/authorized_keys /home/$NEW_USERNAME/.ssh/
-    chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
-
-    printf "${temp}...${NC} ${GREEN}OK${NC}\n"
 
 }
 
@@ -388,6 +260,86 @@ ssh_settings() {
 }
 
 
+# Basic Setup 
+basic_setup() {
+
+    # Set timezone
+    set_timezone
+
+    # Update/upgrade packages
+    update_and_upgrade
+
+}
+
+
+# -------------------------------------------------------------------
+
+# Create sudo user
+create_sudo_user() {
+
+    # Check if user exist
+    check_user_exist() {
+
+        id -u "$NEW_USERNAME" &> $FILE_TMP
+        temp1=$(cat $FILE_TMP | grep id)
+
+        if [ "$temp1" == "" ]; then
+
+            temp="User \"$NEW_USERNAME\" is exist"
+            printf "${RED}${temp}!${NC}\n"
+
+            IS_USER_EXIST=true  
+            
+        else
+
+            IS_USER_EXIST=false
+            IS_CONTINUE_CREATE_USER=false
+            
+        fi
+
+        rm $FILE_TMP
+
+    }
+
+    temp="Create sudo user"
+    printf "${CYAN}${temp}:${NC}\n"
+
+    IS_CONTINUE_CREATE_USER=true
+
+    while [ $IS_CONTINUE_CREATE_USER = true ] || [ $IS_USER_EXIST = true ]; do
+
+        # Check new username
+        read -p "Enter username: " NEW_USERNAME
+
+        # Check if user exist
+        check_user_exist
+
+    done
+
+    # Create the user
+    sudo adduser $NEW_USERNAME
+    
+    # Add to sudo group
+    sudo usermod -aG sudo $NEW_USERNAME
+
+}
+
+
+# Copy SSH authorized keys
+copy_ssh_authorized_keys() {
+
+    temp="Copy SSH authorized keys"
+    printf "${CYAN}${temp}:${NC}\n"
+
+    mkdir /home/$NEW_USERNAME/.ssh
+    cp /root/.ssh/authorized_keys /home/$NEW_USERNAME/.ssh/
+    chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
+
+    printf "${temp}...${NC} ${GREEN}OK${NC}\n"
+
+}
+
+
 # Set timezone
 set_timezone() {
 
@@ -418,406 +370,6 @@ update_and_upgrade() {
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo apt dist-upgrade -y
-
-}
-
-
-# ============================ DEV-TOOLS =============================
-
-# Install Visual Studio Code
-install_vscode() {
-
-    TEMP_PRINT="Install Visual Studio Code"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    # Install the dependencies
-    TEMP_PRINT="Install the dependencies"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo apt install software-properties-common apt-transport-https wget -y
-    
-    # Import the Microsoft GPG key
-    TEMP_PRINT="Import the Microsoft GPG key"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-    
-    # Enable the repository and update the package index
-    TEMP_PRINT="Enable the repository and update the package index"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    sudo apt update
-
-    # Install the package
-    TEMP_PRINT="Install the package"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo apt install code -y
-
-}
-
-
-# Install SQLite Browser
-install_sqlitebrowser() {
-
-    # https://sqlitebrowser.org/dl/
-
-    TEMP_PRINT="Install SQLite Browser"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install sqlitebrowser -y
- 
-}
-
-
-# Install MySQL Workbench
-install_mysqlworkbench() {
-
-    TEMP_PRINT="Install MySQL Workbench"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    # Install the dependencies of MySQL Workbench
-    TEMP_PRINT="Install the dependencies of MySQL Workbench"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo apt install libopengl0 libpcrecpp0v5 libproj15 libzip5 -y
-    
-    # Download the installer
-    TEMP_PRINT="Download the installer"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    wget https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community_8.0.26-1ubuntu20.04_amd64.deb
-    
-    # Install the MySQL Workbench
-    TEMP_PRINT="Install the MySQL Workbench"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo dpkg -i mysql-*
-    
-    # Remove the installer after installation finish
-    TEMP_PRINT="Remove the installer after installation finish"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    rm mysql-*
-
-}
-
-
-# Install Postman
-install_postman() {
-
-    # https://speedysense.com/install-postman-on-ubuntu-20-04/
-
-    TEMP_PRINT="Install Postman"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    # Download Postman installer
-    TEMP_PRINT="Download Postman installer"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    wget --content-disposition https://dl.pstmn.io/download/latest/linux
-    
-    # Extract Postman package
-    TEMP_PRINT="Extract Postman package"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    tar -xzf Postman-linux-*
-    
-    # Move the directory to `opt/` directory
-    TEMP_PRINT="Move the directory to \`opt/\` directory"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo mv Postman /opt
-    
-    # Create a Symbolic Links
-    TEMP_PRINT="Create a Symbolic Links"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo ln -s /opt/Postman/Postman /usr/local/bin/postman
-    
-    # Create a desktop file for Postman app
-    TEMP_PRINT="Create a desktop file for Postman app"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    DESKTOP_FILE="/usr/share/applications/postman.desktop"
-    echo "[Desktop Entry]" >> $DESKTOP_FILE
-    echo "Type=Application" >> $DESKTOP_FILE
-    echo "Name=Postman" >> $DESKTOP_FILE
-    echo "Icon=/opt/Postman/app/resources/app/assets/icon.png" >> $DESKTOP_FILE
-    echo "Exec=\"/opt/Postman/Postman\"" >> $DESKTOP_FILE
-    echo "Comment=Postman GUI" >> $DESKTOP_FILE
-    echo "Categories=Development;Code;" >> $DESKTOP_FILE
-    
-    # Remove the installer after installation finish
-    TEMP_PRINT="Remove the installer after installation finish"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    rm Postman-linux-*
-
-}
-
-
-# ============================= OTHERS ===============================
-
-# Install OpenSSH
-install_openssh() {
-
-    TEMP_PRINT="Install OpenSSH"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install openssh-server -y
-
-}
-
-
-# Install htop
-install_htop() {
-
-    TEMP_PRINT="Install htop"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install htop -y
-
-}
-
-
-# Install net-tools
-install_nettools() {
-
-    TEMP_PRINT="Install net-tools"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install net-tools -y
-
-}
-
-
-# Install tree
-install_tree() {
-
-    TEMP_PRINT="Install tree"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install tree -y
-
-}
-
-
-# Install rename
-install_rename() {
-
-    TEMP_PRINT="Install rename"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install rename -y
-
-}
-
-
-# Install Imagemagick
-install_imagemagick() {
-
-    TEMP_PRINT="Install Imagemagick"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install imagemagick -y
-
-}
-
-
-# Install FileZilla
-install_filezilla() {
-
-    TEMP_PRINT="Install FileZilla"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install filezilla -y
-
-}
-
-
-# Install Git
-install_git() {
-
-    TEMP_PRINT="Install Git"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install git -y
-
-}
-
-
-# Install Python dependencies
-install_python_dependencies() {
-
-    TEMP_PRINT="Install Python dependencies"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    # Install Python environment
-    TEMP_PRINT="Install Python environment"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    sudo apt install python3.8-venv -y
-    
-    # Install PIP
-    TEMP_PRINT="Install PIP"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    sudo apt install python3-pip -y
-    
-    # Install Django Admin
-    TEMP_PRINT="Install Django Admin"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    sudo apt install python3-django -y
-
-}
-
-
-# Install Docker
-install_docker() {
-
-    TEMP_PRINT="Install Docker"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    # Install the dependencies of Docker
-    TEMP_PRINT="Install the dependencies of Docker"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release -y
-    
-    # Add Docker’s official GPG key
-    TEMP_PRINT="Add Docker’s official GPG key"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    
-    # Set up the stable repository of Docker and update the package index
-    TEMP_PRINT="Set up the stable repository of Docker and update the package index"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt update
-
-    # Install the latest version of Docker Engine and container
-    TEMP_PRINT="Install the latest version of Docker Engine and container"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    sudo apt install docker-ce docker-ce-cli containerd.io -y
-    
-    # Install Docker Compose
-    TEMP_PRINT="Install Docker Compose"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    sudo apt install docker-compose -y
-    
-    # Adding user to the Docker group
-    TEMP_PRINT="Adding user to the Docker group"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-    
-    sudo usermod -a -G docker $USER
-    
-}
-
-
-# Install NGINX
-install_nginx() {
-
-    TEMP_PRINT="Install NGINX"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install nginx -y
-
-}
-
-
-# Install Certbot and it’s NGINX plugin
-install_certbot() {
-
-    TEMP_PRINT="Install Certbot and it’s NGINX plugin"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install certbot python3-certbot-nginx -y
-
-}
-
-
-# Install Redis
-install_redis() {
-
-    TEMP_PRINT="Install Redis"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install redis-server -y
-
-}
-
-
-# Install PostgreSQL
-install_postgresql() {
-
-    TEMP_PRINT="Install PostgreSQL"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    sudo apt install libpq-dev postgresql postgresql-contrib -y
-
-}
-
-
-# =========================== END SETUP =============================
-
-# Enable the firewall
-enable_firewall() {
-
-    TEMP_PRINT="Enable the firewall"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    # Enable the Uncomplicated Firewall (UFW)
-    TEMP_PRINT="Enable the Uncomplicated Firewall (UFW)"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo ufw enable
-    
-    # Allow OpenSSH
-    TEMP_PRINT="Allow OpenSSH"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo ufw allow OpenSSH
-    
-    # Allow NGINX
-    TEMP_PRINT="Allow NGINX"
-    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
-
-    sudo ufw allow 'Nginx Full'
-
-}
-
-
-# Reboot the system
-reboot_system() {
-
-    # Some settings or installation need reboot to be affected.
-
-    TEMP_PRINT="Reboot the system"
-    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
-
-    # Ask the user
-    read -p "Reboot now? [y/N] " is_reboot
-
-    if [ "$is_reboot" == "y" ] || [ "$is_reboot" == "Y" ]; then
-
-        printf "${TEMP_PRINT}...${NC} ${GREEN}OK${NC}\n"
-        sudo reboot now
-
-    else
-
-        TEMP_PRINT="Reboot the system canceled."
-        printf "${RED}${TEMP_PRINT}${NC}\n"
-
-        exit
-
-    fi
 
 }
 
@@ -983,6 +535,461 @@ disable_ssh_root_login() {
         sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
         sudo sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config
         sudo systemctl restart ssh
+
+    fi
+
+}
+
+
+# ============================ DEV-TOOLS =============================
+
+# Install developing apps
+install_dev_tools() {
+
+    # Essential
+    install_vscode            # Install Visual Studio Code
+    install_sqlitebrowser     # Install SQLite Browser
+    install_mysqlworkbench    # Install MySQL Workbench
+    install_postman           # Install Postman
+
+    # Additional
+    install_filezilla         # Install FileZilla
+    install_tree              # Install tree
+    install_rename            # Install rename
+    install_imagemagick       # Install Imagemagick
+
+}
+
+
+# -------------------------------------------------------------------
+
+# Install Visual Studio Code
+install_vscode() {
+
+    TEMP_PRINT="Install Visual Studio Code"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    # Install the dependencies
+    TEMP_PRINT="Install the dependencies"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo apt install software-properties-common apt-transport-https wget -y
+    
+    # Import the Microsoft GPG key
+    TEMP_PRINT="Import the Microsoft GPG key"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+    
+    # Enable the repository and update the package index
+    TEMP_PRINT="Enable the repository and update the package index"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+    sudo apt update
+
+    # Install the package
+    TEMP_PRINT="Install the package"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo apt install code -y
+
+}
+
+
+# Install SQLite Browser
+install_sqlitebrowser() {
+
+    # https://sqlitebrowser.org/dl/
+
+    TEMP_PRINT="Install SQLite Browser"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install sqlitebrowser -y
+ 
+}
+
+
+# Install MySQL Workbench
+install_mysqlworkbench() {
+
+    TEMP_PRINT="Install MySQL Workbench"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    # Install the dependencies of MySQL Workbench
+    TEMP_PRINT="Install the dependencies of MySQL Workbench"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo apt install libopengl0 libpcrecpp0v5 libproj15 libzip5 -y
+    
+    # Download the installer
+    TEMP_PRINT="Download the installer"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    wget https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community_8.0.26-1ubuntu20.04_amd64.deb
+    
+    # Install the MySQL Workbench
+    TEMP_PRINT="Install the MySQL Workbench"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo dpkg -i mysql-*
+    
+    # Remove the installer after installation finish
+    TEMP_PRINT="Remove the installer after installation finish"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    rm mysql-*
+
+}
+
+
+# Install Postman
+install_postman() {
+
+    # https://speedysense.com/install-postman-on-ubuntu-20-04/
+
+    TEMP_PRINT="Install Postman"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    # Download Postman installer
+    TEMP_PRINT="Download Postman installer"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    wget --content-disposition https://dl.pstmn.io/download/latest/linux
+    
+    # Extract Postman package
+    TEMP_PRINT="Extract Postman package"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    tar -xzf Postman-linux-*
+    
+    # Move the directory to `opt/` directory
+    TEMP_PRINT="Move the directory to \`opt/\` directory"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo mv Postman /opt
+    
+    # Create a Symbolic Links
+    TEMP_PRINT="Create a Symbolic Links"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo ln -s /opt/Postman/Postman /usr/local/bin/postman
+    
+    # Create a desktop file for Postman app
+    TEMP_PRINT="Create a desktop file for Postman app"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    DESKTOP_FILE="/usr/share/applications/postman.desktop"
+    echo "[Desktop Entry]" >> $DESKTOP_FILE
+    echo "Type=Application" >> $DESKTOP_FILE
+    echo "Name=Postman" >> $DESKTOP_FILE
+    echo "Icon=/opt/Postman/app/resources/app/assets/icon.png" >> $DESKTOP_FILE
+    echo "Exec=\"/opt/Postman/Postman\"" >> $DESKTOP_FILE
+    echo "Comment=Postman GUI" >> $DESKTOP_FILE
+    echo "Categories=Development;Code;" >> $DESKTOP_FILE
+    
+    # Remove the installer after installation finish
+    TEMP_PRINT="Remove the installer after installation finish"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    rm Postman-linux-*
+
+}
+
+
+# -------------------------------------------------------------------
+
+# Install FileZilla
+install_filezilla() {
+
+    TEMP_PRINT="Install FileZilla"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install filezilla -y
+
+}
+
+
+# Install tree
+install_tree() {
+
+    TEMP_PRINT="Install tree"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install tree -y
+
+}
+
+
+# Install rename
+install_rename() {
+
+    TEMP_PRINT="Install rename"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install rename -y
+
+}
+
+
+# Install Imagemagick
+install_imagemagick() {
+
+    TEMP_PRINT="Install Imagemagick"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install imagemagick -y
+
+}
+
+
+# ============================= OTHERS ===============================
+
+# Install other apps
+install_other_apps() {
+
+    install_openssh                 # Install OpenSSH
+    install_htop                    # Install htop
+    install_git                     # Install Git
+    install_nettools                # Install net-tools
+    install_python_dependencies     # Install Python dependencies
+    install_docker                  # Install Docker
+    install_nginx                   # Install NGINX
+    install_certbot                 # Install Certbot
+    install_redis                   # Install Redis
+    install_postgresql              # Install PostgreSQL
+
+}
+
+
+# -------------------------------------------------------------------
+
+# Install OpenSSH
+install_openssh() {
+
+    TEMP_PRINT="Install OpenSSH"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install openssh-server -y
+
+}
+
+
+# Install htop
+install_htop() {
+
+    TEMP_PRINT="Install htop"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install htop -y
+
+}
+
+
+# Install Git
+install_git() {
+
+    TEMP_PRINT="Install Git"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install git -y
+
+}
+
+
+# Install net-tools
+install_nettools() {
+
+    TEMP_PRINT="Install net-tools"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install net-tools -y
+
+}
+
+
+# Install Python dependencies
+install_python_dependencies() {
+
+    TEMP_PRINT="Install Python dependencies"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    # Install Python environment
+    TEMP_PRINT="Install Python environment"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    sudo apt install python3.8-venv -y
+    
+    # Install PIP
+    TEMP_PRINT="Install PIP"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    sudo apt install python3-pip -y
+    
+    # Install Django Admin
+    TEMP_PRINT="Install Django Admin"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    sudo apt install python3-django -y
+
+}
+
+
+# Install Docker
+install_docker() {
+
+    TEMP_PRINT="Install Docker"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    # Install the dependencies of Docker
+    TEMP_PRINT="Install the dependencies of Docker"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release -y
+    
+    # Add Docker’s official GPG key
+    TEMP_PRINT="Add Docker’s official GPG key"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    
+    # Set up the stable repository of Docker and update the package index
+    TEMP_PRINT="Set up the stable repository of Docker and update the package index"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt update
+
+    # Install the latest version of Docker Engine and container
+    TEMP_PRINT="Install the latest version of Docker Engine and container"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    sudo apt install docker-ce docker-ce-cli containerd.io -y
+    
+    # Install Docker Compose
+    TEMP_PRINT="Install Docker Compose"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    sudo apt install docker-compose -y
+    
+    # Adding user to the Docker group
+    TEMP_PRINT="Adding user to the Docker group"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+    
+    sudo usermod -a -G docker $USER
+    
+}
+
+
+# Install NGINX
+install_nginx() {
+
+    TEMP_PRINT="Install NGINX"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install nginx -y
+
+}
+
+
+# Install Certbot and it’s NGINX plugin
+install_certbot() {
+
+    TEMP_PRINT="Install Certbot and it’s NGINX plugin"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install certbot python3-certbot-nginx -y
+
+}
+
+
+# Install Redis
+install_redis() {
+
+    TEMP_PRINT="Install Redis"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install redis-server -y
+
+}
+
+
+# Install PostgreSQL
+install_postgresql() {
+
+    TEMP_PRINT="Install PostgreSQL"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install libpq-dev postgresql postgresql-contrib -y
+
+}
+
+
+# =========================== END SETUP =============================
+
+# End Setup
+end_setup() {
+
+    # Enable the firewall
+    enable_firewall
+
+    # Reboot the system 
+    reboot_system       
+
+}
+
+
+# -------------------------------------------------------------------
+
+# Enable the firewall
+enable_firewall() {
+
+    TEMP_PRINT="Enable the firewall"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    # Enable the Uncomplicated Firewall (UFW)
+    TEMP_PRINT="Enable the Uncomplicated Firewall (UFW)"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo ufw enable
+    
+    # Allow OpenSSH
+    TEMP_PRINT="Allow OpenSSH"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo ufw allow OpenSSH
+    
+    # Allow NGINX
+    TEMP_PRINT="Allow NGINX"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+    sudo ufw allow 'Nginx Full'
+
+}
+
+
+# Reboot the system
+reboot_system() {
+
+    # Some settings or installation need reboot to be affected.
+
+    TEMP_PRINT="Reboot the system"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    # Ask the user
+    read -p "Reboot now? [y/N] " is_reboot
+
+    if [ "$is_reboot" == "y" ] || [ "$is_reboot" == "Y" ]; then
+
+        printf "${TEMP_PRINT}...${NC} ${GREEN}OK${NC}\n"
+        sudo reboot now
+
+    else
+
+        TEMP_PRINT="Reboot the system canceled."
+        printf "${RED}${TEMP_PRINT}${NC}\n"
+
+        exit
 
     fi
 
