@@ -13,6 +13,20 @@
     cp /root/.ssh/authorized_keys /home/$NEW_USERNAME/.ssh/
     chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
     ```
+- (Optional) SSH settings
+    ```bash
+    # Change the SSH Port
+    sudo sed -i "s/#Port 22/Port $NEW_SSH_PORT/g" /etc/ssh/sshd_config
+    # Allow the new port in firewall
+    sudo ufw allow $NEW_SSH_PORT/tcp
+    # Disable password authentication on SSH
+    sudo sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/g" /etc/ssh/sshd_config
+    # Disable root login on SSH
+    sudo sed -i "s/PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
+    sudo sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config
+    # Restart the service
+    sudo systemctl restart ssh
+    ```
 - Set timezone
     ```bash
     # Set timezone
