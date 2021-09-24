@@ -103,6 +103,10 @@ Operating system that already tested on dedicated/bare-metal server:
 
 1. [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server)
 
+| No | Type | CPU | RAM | HDD | Tested? | 
+|:---:|---|---|---|---|:---:|
+| 1 | Server | 8 CPUs | 8 GB | 1 TB | ✅ |
+
 ## User Setup
 
 - (Optional) Change the `root` password
