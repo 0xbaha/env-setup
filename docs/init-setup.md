@@ -1,5 +1,7 @@
 # Init Setup
 
+## Create User
+
 - Create sudo user
     ```bash
     # Create the user
@@ -13,6 +15,9 @@
     cp /root/.ssh/authorized_keys /home/$NEW_USERNAME/.ssh/
     chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
     ```
+
+## SSH Settings
+
 - (Optional) SSH settings
     ```bash
     # Change the SSH Port
@@ -27,6 +32,9 @@
     # Restart the service
     sudo systemctl restart ssh
     ```
+
+## Basic Setup
+
 - Set timezone
     ```bash
     # Set timezone
