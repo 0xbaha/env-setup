@@ -230,8 +230,6 @@ create_user() {
 
             is_create_user=false
 
-            exit
-            
         else
 
             TEMP_PRINT="Sudo user WILL be created"
