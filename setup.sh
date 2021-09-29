@@ -438,7 +438,7 @@ change_ssh_port() {
 
     if [ "$is_change_ssh_port" == true ]; then
 
-        read -p "Enter the new port [default: $DEFAULT_NEW_SSH_PORT] " USER_INPUT_NEW_SSH_PORT
+        read -p "Enter the new port [$DEFAULT_NEW_SSH_PORT] " USER_INPUT_NEW_SSH_PORT
 
         TEMP_MESSAGE="Using default value"
         TEMP_PRINT="${PURPLE}${TEMP_MESSAGE}...${NC}\n"
