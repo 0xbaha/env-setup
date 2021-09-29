@@ -1,6 +1,8 @@
-# Dev Setup
+# Environment Setup
 
-Set up an environment for the development, testing, staging, and production.
+Set up an environment for web development, including the phase of developing, testing, staging, and production.
+
+### Web Development
 
 - Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
 - Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **staging** environment.
@@ -60,8 +62,8 @@ Set up an environment for the development, testing, staging, and production.
 
 ### (Optional) After Finish Setup
 
-1. SSH manual [setup](https://gist.github.com/ba1x/38a6b359e2b4221b72adff201403045d) for using the existing key.
-1. [Clear](https://gist.github.com/ba1x/35621c685282993146f6c51afd6f9bef) bash history if necessary.
+1. SSH manual [setup](docs/ssh-manual-setup.md) for using the existing key.
+1. [Clear](docs/clear-bash-history.md) bash history if necessary.
 
 ## General Information
 
