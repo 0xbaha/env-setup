@@ -45,7 +45,7 @@ main() {
 
     # ./setup.sh
 
-    if [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "" ] && [ "$2" == "" ]; then
+    if [ "$0" == "./$FILE_SETUP" ] && [ "$1" == "" ]; then 
 
         check_sudo_user
         if [ "$IS_SUDO_USER" = true ]; then ask_user_option; fi
@@ -125,7 +125,9 @@ ask_user_option() {
 
     ask_user
 
-    while [ "$USER_OPTION" != "1" ] && [ "$USER_OPTION" != "2" ] && [ "$USER_OPTION" != "3" ]; do
+    ARR_OPTIONS=(1 2 3 4)
+
+    while ! [[ ${ARR_OPTIONS[*]} =~ (^|[[:space:]])"$USER_OPTION"($|[[:space:]]) ]]; do
         ask_user
     done
 
@@ -215,11 +217,43 @@ setup_physical_server() {
 # Create User
 create_user() {
 
-    # Create sudo user
-    create_sudo_user
+    # Check if User want to create new sudo user
+    ask_create_user() {
 
-    # Copy SSH authorized keys
-    copy_ssh_authorized_keys
+        TEMP_PRINT="Create new sudo user? [Y/n] "
+        read -p "$TEMP_PRINT" user_option_create_user
+
+        if [ "$user_option_create_user" == "n" ] || [ "$user_option_create_user" == "N" ]; then
+
+            TEMP_PRINT="Sudo user will NOT be created"
+            printf "${RED}${TEMP_PRINT}...${NC}\n"
+
+            is_create_user=false
+
+            exit
+            
+        else
+
+            TEMP_PRINT="Sudo user WILL be created"
+            printf "${GREEN}${TEMP_PRINT}...${NC}\n"
+            
+            is_create_user=true
+
+        fi
+
+    }
+
+    ask_create_user
+
+    if [ "$is_create_user" = true ]; then
+
+        # Create sudo user
+        create_sudo_user
+
+        # Copy SSH authorized keys
+        copy_ssh_authorized_keys
+
+    fi
 
 }
 
@@ -1023,3 +1057,4 @@ main "$@"
 # - Check Whether a User Exists https://stackoverflow.com/a/14811915
 # - How to insert text into a root-owned file using sudo? https://unix.stackexchange.com/a/4337
 # - Temporary failure in name resolution https://stackoverflow.com/a/54460886
+# - How do I test if an item is in a bash array? https://unix.stackexchange.com/a/625665
