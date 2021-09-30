@@ -1,29 +1,33 @@
 # Environment Setup
 
-Set up an environment for web development, including the phase of developing, testing, staging, and production.
+This repository contain a [script](setup.sh) that can be used to set up an environment for [web development](#web-development) and [mail server](#mail-server).
 
 ### Web Development
 
 - Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
-- Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **staging** environment.
-- Setup in physical server for **production** environment.
+- Cloud setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment.
+- Bare-metal setup for **production** environment.
+
+### Mail Server
+
+- Set up a mail server in cloud.
 
 ## How to Start
 
-### VirtualBox
+### Virtual Machine (VirtualBox)
 
-**Desktop**
+#### Desktop
 
-1. Download and install[<sup>2</sup>](#footnotes) the [guest OS](#virtualbox-1).
+1. Download and install[<sup>2</sup>](#footnotes) the [guest OS](#virtualbox).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/env-setup/archive/refs/heads/main.zip) this project using the **host**.
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
 1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `1. Vbox (Desktop)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-**Server**
+#### Server
 
-1. Download and [install](docs/install-ubuntu-server.md)[<sup>3</sup>](#footnotes) the [guest OS](#virtualbox-1).
+1. Download and [install](docs/install-ubuntu-server.md)[<sup>3</sup>](#footnotes) the [guest OS](#virtualbox).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Fix Error](#fix-error) in the **guest**.
 1. Clone this project and open the folder.
@@ -33,7 +37,11 @@ Set up an environment for web development, including the phase of developing, te
     ```
 1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox (Server)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-### DigitalOcean
+### Cloud
+
+Make sure to add the SSH keys in the **Client Area** before starting the setup below.
+
+**DigitalOcean**
 
 1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` for the **Authentication**.
 1. Login to the server.
@@ -45,8 +53,27 @@ Set up an environment for web development, including the phase of developing, te
     git clone https://github.com/ba1x/env-setup.git
     cd env-setup
     ```
-1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
+1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean/Hostwinds)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
+**Hostwinds**
+
+1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the required specification, and choose SSH Keys (that already added) for the **Authentication**.
+
+
+1. Log in to the server using SSH:
+    ```bash
+     ssh root@SERVER_IP_ADDRESS     # login using SSH
+    ```
+1. Download and install the required apps (Git and UFW).
+    ```bash
+    sudo apt update && sudo apt install git ufw -y
+    ```
+1. Clone this project and open the folder.
+     ```bash
+    git clone https://github.com/ba1x/env-setup.git
+    cd env-setup
+    ```
+1. Run command `./setup.sh` and choose option `3. Cloud (DigitalOcean/Hostwinds)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 ### Physical Server
 
