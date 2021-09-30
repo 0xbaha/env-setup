@@ -786,6 +786,7 @@ install_imagemagick() {
 install_other_apps() {
 
     install_openssh                 # Install OpenSSH
+    install_host                    # Install host
     install_htop                    # Install htop
     install_git                     # Install Git
     install_nettools                # Install net-tools
@@ -808,6 +809,17 @@ install_openssh() {
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     sudo apt install openssh-server -y
+
+}
+
+
+# Install host
+install_host() {
+
+    TEMP_PRINT="Install host"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install host -y
 
 }
 

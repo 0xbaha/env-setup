@@ -79,6 +79,11 @@
     # Install OpenSSH
     sudo apt install openssh-server
     ``` 
+- Install host
+    ```bash
+    # Install host
+    sudo apt install host
+    ``` 
 - Install htop
     ```bash
     # Install htop
