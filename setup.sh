@@ -92,8 +92,16 @@ ask_user_option() {
 
     ask_user() {
 
-        TEMP_PRINT="Which type?\n  1. VBox (Desktop)\n  2. VBox (Server)\n  3. Cloud (DigitalOcean)\n  4. Physical Server\n"
-        printf "$TEMP_PRINT"
+        TEMP_PRINT_0="Which type?\n"
+        TEMP_PRINT_1="  1. VBox (Desktop)\n"
+        TEMP_PRINT_2="  2. VBox (Server)\n"
+        TEMP_PRINT_3="  3. Cloud (DigitalOcean/Hostwinds)\n"
+        TEMP_PRINT_4="  4. Physical Server\n"
+        printf "$TEMP_PRINT_0"
+        printf "$TEMP_PRINT_1"
+        printf "$TEMP_PRINT_2"
+        printf "$TEMP_PRINT_3"
+        printf "$TEMP_PRINT_4"
 
         TEMP_PRINT="Option: "
         read -p "$TEMP_PRINT" USER_OPTION
