@@ -3,12 +3,14 @@
 
 FILE_TEMP="temp.txt"
 FILE_CONFIG_POSTFIX="/etc/postfix/main.cf"
+FILE_CONFIG_ALIASES="/etc/aliases"
 
 
 # ....
 CURRENT_SERVER_HOSTNAME=$(hostname)
 read -p "Email hostname (eg, mail.example.com) []: " EMAIL_HOSTNAME
 read -p "Email domain (eg, example.com for user@xample.com) []: " EMAIL_DOMAIN
+read -p "Email user alias (eg, admin) []: " EMAIL_USER_ALIAS
 
 # update package list
 sudo apt update
@@ -31,14 +33,18 @@ sudo sed -i '/myhostname =/d' $FILE_CONFIG_POSTFIX
 sudo sed -i '/mydestination =/d' $FILE_CONFIG_POSTFIX
 
 # Add new line with new values of 'myhostname' and 'mydestination'
-echo "myhostname = ${EMAIL_HOSTNAME}" | sudo tee -a $FILE_CONFIG_POSTFIX
-echo "mydestination = \$myhostname, ${EMAIL_DOMAIN}, ${EMAIL_HOSTNAME}, localhost.${EMAIL_DOMAIN}, localhost" | sudo tee -a $FILE_CONFIG_POSTFIX
+printf "myhostname = ${EMAIL_HOSTNAME}\n" | sudo tee -a $FILE_CONFIG_POSTFIX
+printf "mydestination = \$myhostname, ${EMAIL_DOMAIN}, ${EMAIL_HOSTNAME}, localhost.${EMAIL_DOMAIN}, localhost\n" | sudo tee -a $FILE_CONFIG_POSTFIX
 
 sudo systemctl reload postfix
 
 # Check Postfix config after edit
 cat $FILE_CONFIG_POSTFIX | grep myhostname
 cat $FILE_CONFIG_POSTFIX | grep mydestination
+
+# Add new line with new values of aliases
+printf "root:\t${EMAIL_USER_ALIAS}\n" | sudo tee -a $FILE_CONFIG_ALIASES
+sudo newaliases
 
 # Check Postfix version with this command:
 TEMP_PRINT="Check Postfix version with this command:"
