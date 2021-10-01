@@ -41,7 +41,7 @@ This repository contain a [script](setup.sh) that can be used to set up an envir
 
 Make sure to add the SSH keys in the **Client Area** before starting the setup below.
 
-**DigitalOcean**
+#### DigitalOcean
 
 1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` for the **Authentication**.
 1. Login to the server.
@@ -55,7 +55,7 @@ Make sure to add the SSH keys in the **Client Area** before starting the setup b
     ```
 1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean/Hostwinds)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-**Hostwinds**
+#### Hostwinds
 
 1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the required specification, and choose SSH Keys (that already added) for the **Authentication**.
 
@@ -102,14 +102,14 @@ Operating system that already tested on VirtualBox:
 1. [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server)[<sup>3</sup>](#footnotes)
 
 
-**Settings**
+#### Settings
 
 | No | Type | CPU | RAM | HDD | VGA | Network | Tested? |
 |:---:|---|---|---|---|---|:---:|:---:|
 | 1 | Desktop | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
 | 2 | Server | 1 CPU | 1024 MB | 10 GB | 16 MB | Bridged | ✅ |
 
-**Profile**
+#### Profile
 
 | No | VM Name | Name | Hostname | Username | Password |
 |:---:|---|:---:|---|:---:|:---:|
