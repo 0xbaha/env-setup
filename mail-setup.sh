@@ -2,6 +2,7 @@
 
 
 FILE_TEMP="temp.txt"
+FILE_CONFIG_POSTFIX="/etc/postfix/main.cf"
 
 
 # ....
@@ -18,19 +19,26 @@ sudo apt install postfix -y
 # install the telnet utility to check if it’s open or blocked.
 sudo apt install telnet -y
 
+# install mailutils to send and read email
+sudo apt install mailutils -y
+
 # Replace server hostname with email hostname in Postfix config
 TEMP_PRINT="Replace server hostname with email hostname in Postfix config"
 printf "$TEMP_PRINT\n"
 
 # Delete lines that contain a pattern of 'myhostname =' and 'mydestination ='
-sudo sed -i '/myhostname =/d' /etc/postfix/main.cf
-sudo sed -i '/mydestination =/d' /etc/postfix/main.cf
+sudo sed -i '/myhostname =/d' $FILE_CONFIG_POSTFIX
+sudo sed -i '/mydestination =/d' $FILE_CONFIG_POSTFIX
 
 # Add new line with new values of 'myhostname' and 'mydestination'
-echo "myhostname = ${EMAIL_HOSTNAME}" >> /etc/postfix/main.cf
-echo "mydestination = \$myhostname, ${EMAIL_DOMAIN}, ${EMAIL_HOSTNAME}, localhost.${EMAIL_DOMAIN}, localhost" >> /etc/postfix/main.cf
+echo "myhostname = ${EMAIL_HOSTNAME}" | sudo tee -a $FILE_CONFIG_POSTFIX
+echo "mydestination = \$myhostname, ${EMAIL_DOMAIN}, ${EMAIL_HOSTNAME}, localhost.${EMAIL_DOMAIN}, localhost" | sudo tee -a $FILE_CONFIG_POSTFIX
 
 sudo systemctl reload postfix
+
+# Check Postfix config after edit
+cat $FILE_CONFIG_POSTFIX | grep myhostname
+cat $FILE_CONFIG_POSTFIX | grep mydestination
 
 # Check Postfix version with this command:
 TEMP_PRINT="Check Postfix version with this command:"
