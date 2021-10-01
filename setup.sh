@@ -226,7 +226,7 @@ setup_physical_server() {
 create_user() {
 
     # Check if User want to create new sudo user
-    ask_create_user() {
+    ask_create_sudo_user() {
 
         TEMP_PRINT="Create new sudo user? [Y/n] "
         read -p "$TEMP_PRINT" user_option_create_user
@@ -236,30 +236,80 @@ create_user() {
             TEMP_PRINT="Sudo user will NOT be created"
             printf "${RED}${TEMP_PRINT}...${NC}\n"
 
-            is_create_user=false
+            is_create_sudo_user=false
 
         else
 
             TEMP_PRINT="Sudo user WILL be created"
             printf "${GREEN}${TEMP_PRINT}...${NC}\n"
             
-            is_create_user=true
+            is_create_sudo_user=true
 
         fi
 
     }
 
-    ask_create_user
+    # Check if user exist
+    check_user_exist() {
 
-    if [ "$is_create_user" = true ]; then
+        id -u "$NEW_USERNAME" &> $FILE_TMP
+        temp1=$(cat $FILE_TMP | grep id)
+
+        if [ "$temp1" == "" ]; then
+
+            temp="User \"$NEW_USERNAME\" is exist"
+            printf "${RED}${temp}!${NC}\n"
+
+            IS_USER_EXIST=true  
+            
+        else
+
+            IS_USER_EXIST=false
+            IS_CONTINUE_CREATE_USER=false
+            
+        fi
+
+        rm $FILE_TMP
+
+    }
+
+    # Create sudo user
+    create_sudo_user_() {
+
+        temp="Create sudo user"
+        printf "${CYAN}${temp}:${NC}\n"
+
+        IS_CONTINUE_CREATE_USER=true
+
+        while [ $IS_CONTINUE_CREATE_USER = true ] || [ $IS_USER_EXIST = true ]; do
+
+            # Check new username
+            read -p "Enter username: " NEW_USERNAME
+
+            # Check if user exist
+            check_user_exist
+
+        done
+
+        # Create the user
+        sudo adduser $NEW_USERNAME
+        
+        # Add to sudo group
+        sudo usermod -aG sudo $NEW_USERNAME
+
+    }
+
+    ask_create_sudo_user
+
+    if [ "$is_create_sudo_user" = true ]; then
 
         # Create sudo user
         create_sudo_user
 
-        # Copy SSH authorized keys
-        copy_ssh_authorized_keys
-
     fi
+
+    # Copy SSH authorized keys
+    copy_ssh_authorized_keys
 
 }
 
@@ -310,57 +360,6 @@ basic_setup() {
 
 
 # -------------------------------------------------------------------
-
-# Create sudo user
-create_sudo_user() {
-
-    # Check if user exist
-    check_user_exist() {
-
-        id -u "$NEW_USERNAME" &> $FILE_TMP
-        temp1=$(cat $FILE_TMP | grep id)
-
-        if [ "$temp1" == "" ]; then
-
-            temp="User \"$NEW_USERNAME\" is exist"
-            printf "${RED}${temp}!${NC}\n"
-
-            IS_USER_EXIST=true  
-            
-        else
-
-            IS_USER_EXIST=false
-            IS_CONTINUE_CREATE_USER=false
-            
-        fi
-
-        rm $FILE_TMP
-
-    }
-
-    temp="Create sudo user"
-    printf "${CYAN}${temp}:${NC}\n"
-
-    IS_CONTINUE_CREATE_USER=true
-
-    while [ $IS_CONTINUE_CREATE_USER = true ] || [ $IS_USER_EXIST = true ]; do
-
-        # Check new username
-        read -p "Enter username: " NEW_USERNAME
-
-        # Check if user exist
-        check_user_exist
-
-    done
-
-    # Create the user
-    sudo adduser $NEW_USERNAME
-    
-    # Add to sudo group
-    sudo usermod -aG sudo $NEW_USERNAME
-
-}
-
 
 # Copy SSH authorized keys
 copy_ssh_authorized_keys() {
