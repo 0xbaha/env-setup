@@ -22,7 +22,14 @@ sudo apt install telnet -y
 TEMP_PRINT="Replace server hostname with email hostname in Postfix config"
 printf "$TEMP_PRINT\n"
 
-sudo sed -i "s/$CURRENT_SERVER_HOSTNAME/$EMAIL_HOSTNAME/g" /etc/postfix/main.cf
+# Delete lines that contain a pattern of 'myhostname =' and 'mydestination ='
+sudo sed -i '/myhostname =/d' /etc/postfix/main.cf
+sudo sed -i '/mydestination =/d' /etc/postfix/main.cf
+
+# Add new line with new values of 'myhostname' and 'mydestination'
+echo "myhostname = ${EMAIL_HOSTNAME}" >> /etc/postfix/main.cf
+echo "mydestination = \$myhostname, ${EMAIL_DOMAIN}, ${EMAIL_HOSTNAME}, localhost.${EMAIL_DOMAIN}, localhost" >> /etc/postfix/main.cf
+
 sudo systemctl reload postfix
 
 # Check Postfix version with this command:
