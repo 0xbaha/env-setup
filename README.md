@@ -4,9 +4,9 @@ This repository contain a [script](setup.sh) that can be used to set up an envir
 
 ### Web Development
 
-- Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
-- Cloud setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment.
-- Bare-metal (physical server) setup for **production** environment.
+- [Virtual machine](#virtual-machine) setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
+- [Cloud](#cloud) setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment.
+- [Bare-metal (physical server)](#physical-server) setup for **production** environment.
 
 ### Mail Server
 
@@ -14,7 +14,9 @@ This repository contain a [script](setup.sh) that can be used to set up an envir
 
 ## How to Start
 
-### Virtual Machine (VirtualBox)
+### Virtual Machine
+
+Virtual machine that will be used in this section is VirtualBox.
 
 #### Desktop
 
