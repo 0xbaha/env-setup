@@ -106,7 +106,7 @@ ask_user_option() {
 
     ask_user() {
 
-        TEMP_PRINT_A="${CYAN}Which set up will you do${NC}\n"
+        TEMP_PRINT_A="${CYAN}Which set up will you do?${NC}\n"
         TEMP_PRINT_1="  1. VirtualBox (Desktop)\n"
         TEMP_PRINT_2="  2. VirtualBox (Server)\n"
         TEMP_PRINT_3="  3. Cloud (DigitalOcean/Hostwinds)\n"
