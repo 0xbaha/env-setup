@@ -23,7 +23,7 @@ TEMP_PRINT="Replace server hostname with email hostname in Postfix config"
 printf "$TEMP_PRINT\n"
 
 sudo sed -i "s/$CURRENT_SERVER_HOSTNAME/$EMAIL_HOSTNAME/g" /etc/postfix/main.cf
-sudo systemctl restart postfix
+sudo systemctl reload postfix
 
 # Check Postfix version with this command:
 TEMP_PRINT="Check Postfix version with this command:"
