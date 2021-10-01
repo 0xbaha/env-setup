@@ -106,13 +106,13 @@ ask_user_option() {
 
     ask_user() {
 
-        TEMP_PRINT_0="Which type?\n"
-        TEMP_PRINT_1="  1. VBox (Desktop)\n"
-        TEMP_PRINT_2="  2. VBox (Server)\n"
+        TEMP_PRINT_A="${CYAN}Which options do you need?${NC}\n"
+        TEMP_PRINT_1="  1. VirtualBox (Desktop)\n"
+        TEMP_PRINT_2="  2. VirtualBox (Server)\n"
         TEMP_PRINT_3="  3. Cloud (DigitalOcean/Hostwinds)\n"
-        TEMP_PRINT_4="  4. Physical Server\n"
-        TEMP_PRINT_5="  5. Email Server\n"
-        printf "$TEMP_PRINT_0"
+        TEMP_PRINT_4="  4. Bare-metal (physical server)\n"
+        TEMP_PRINT_5="  5. Email Server (${RED}required${NC} to set up ${YELLOW}at least${NC} 1 of option 1-4)\n"
+        printf "$TEMP_PRINT_A"
         printf "$TEMP_PRINT_1"
         printf "$TEMP_PRINT_2"
         printf "$TEMP_PRINT_3"
