@@ -274,7 +274,7 @@ create_user() {
     }
 
     # Create sudo user
-    create_sudo_user_() {
+    create_sudo_user() {
 
         temp="Create sudo user"
         printf "${CYAN}${temp}:${NC}\n"
