@@ -9,6 +9,7 @@ FILE_CONFIG_OPENDKIM="/etc/opendkim.conf"
 FILE_CONFIG_OPENDKIM_SIGNINGTABLE="/etc/opendkim/signing.table"
 FILE_CONFIG_OPENDKIM_KEYTABLE="/etc/opendkim/key.table"
 FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS="/etc/opendkim/trusted.hosts"
+FILE_CONFIG_OPENDKIM_DEFAULT="/etc/default/opendkim"
 
 # Check if user want to continue the process
 ask_continue_process() {
@@ -194,6 +195,25 @@ ask_continue_process
 # Test DKIM Key
 # Enter the following command on Ubuntu server to test your key.
 sudo opendkim-testkey -d $EMAIL_DOMAIN -s default -vvv
+
+# -------------------------------------------------------------------
+
+# Create a directory to hold the OpenDKIM socket file and allow only opendkim user and postfix group to access it.
+sudo mkdir /var/spool/postfix/opendkim
+sudo chown opendkim:postfix /var/spool/postfix/opendkim
+
+# Then edit the OpenDKIM main configuration file.
+sudo sed -i "s/local:\/run\/opendkim\/opendkim.sock/local:\/var\/spool\/postfix\/opendkim\/opendkim.sock/g" $FILE_CONFIG_OPENDKIM
+sudo sed -i "s/SOCKET=local:\$RUNDIR\/opendkim.sock/SOCKET=\"local:\/var\/spool\/postfix\/opendkim\/opendkim.sock\"/g" $FILE_CONFIG_OPENDKIM_DEFAULT
+
+TEMP_PRINT_1="# Milter configuration"
+TEMP_PRINT_2="milter_default_action = accept"
+TEMP_PRINT_3="milter_protocol = 6"
+TEMP_PRINT_4="smtpd_milters = local:opendkim/opendkim.sock"
+TEMP_PRINT_5="non_smtpd_milters = \$smtpd_milters"
+printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
+
+sudo systemctl restart opendkim postfix
 
 # -------------------------------------------------------------------
 
