@@ -1166,7 +1166,7 @@ setup_email_server() {
         read -p "$TEMP_PRINT_2" EMAIL_DOMAIN
         read -p "$TEMP_PRINT_3" EMAIL_USER_ALIAS
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Update package list
         TEMP_PRINT="Update package list"
@@ -1192,7 +1192,7 @@ setup_email_server() {
 
         sudo apt install mailutils -y
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Replace server hostname with email hostname in Postfix config
         TEMP_PRINT="Replace server hostname with email hostname in Postfix config"
@@ -1214,7 +1214,7 @@ setup_email_server() {
 
         sudo systemctl reload postfix
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Check Postfix config after edit
         TEMP_PRINT="Check Postfix config after edit"
@@ -1253,7 +1253,7 @@ setup_email_server() {
 
         sudo ufw allow 25/tcp 
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Create an SPF Record in DNS (v=spf1 mx ~all)
         TEMP_PRINT="Create an SPF Record in DNS (v=spf1 mx ~all)"
@@ -1262,7 +1262,7 @@ setup_email_server() {
         # Check if user want to continue the process
         ask_continue_process
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Install SPF Policy Agen (to detect forged incoming emails)
         TEMP_PRINT="Install SPF Policy Agen (to detect forged incoming emails)"
@@ -1291,7 +1291,7 @@ setup_email_server() {
         printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n   $TEMP_PRINT_3\n   $TEMP_PRINT_4\n   $TEMP_PRINT_5\n   $TEMP_PRINT_6\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
         sudo systemctl restart postfix
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Setting up DKIM
         # First, install OpenDKIM which is an open-source implementation of the DKIM sender authentication system.
@@ -1330,7 +1330,7 @@ setup_email_server() {
         TEMP_PRINT_7="InternalHosts       $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS "
         printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n\n$TEMP_PRINT_6\n$TEMP_PRINT_7\n" | sudo tee -a $FILE_CONFIG_OPENDKIM
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Create a directory structure for OpenDKIM
         TEMP_PRINT="Create a directory structure for OpenDKIM"
@@ -1363,7 +1363,7 @@ setup_email_server() {
         TEMP_PRINT_3="*.$EMAIL_DOMAIN"
         printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n\n$TEMP_PRINT_3\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Create a separate folder for the domain
         TEMP_PRINT="Create a separate folder for the domain"
@@ -1395,7 +1395,7 @@ setup_email_server() {
 
         sudo cat /etc/opendkim/keys/$EMAIL_DOMAIN/default.txt
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Publish the Public Key in DNS Records
         TEMP_PRINT="Publish the Public Key in DNS Records"
@@ -1404,7 +1404,7 @@ setup_email_server() {
         # Check if user want to continue the process
         ask_continue_process
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Test the DKIM Key
         TEMP_PRINT="Test the DKIM Key"
@@ -1412,7 +1412,7 @@ setup_email_server() {
 
         sudo opendkim-testkey -d $EMAIL_DOMAIN -s default -vvv
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Create a directory to hold the OpenDKIM socket file and allow only opendkim user and postfix group to access it
         TEMP_PRINT="Create a directory to hold the OpenDKIM socket file and allow only opendkim user and postfix group to access it"
@@ -1437,7 +1437,7 @@ setup_email_server() {
 
         sudo systemctl restart opendkim postfix
 
-        # ---------------------------------------------------------------
+        # -----------------------------------------------------------
 
         # Check if port 25 open or blocked
         TEMP_PRINT="Check if port 25 open or blocked"
