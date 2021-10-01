@@ -365,14 +365,51 @@ create_sudo_user() {
 # Copy SSH authorized keys
 copy_ssh_authorized_keys() {
 
-    temp="Copy SSH authorized keys"
-    printf "${CYAN}${temp}:${NC}\n"
+    # Check if SSH authorized keys exist
+    check_ssh_authorized_keys_exist() {
+
+        TEMP_COMMAND=$(cat \~./ssh/authorized_keys)
+
+        if [ "$TEMP_COMMAND" != "" ]; then
+
+            TEMP_PRINT="Authorized key is exist"
+            printf "${GREEN}${TEMP_PRINT}...${NC}\n"
+
+            IS_AUTHORIZED_KEYS_EXIST=true  
+            
+        else
+
+            TEMP_PRINT="ERROR: Authorized key is NOT available"
+            printf "${RED}${TEMP_PRINT}...${NC}\n"
+
+            IS_AUTHORIZED_KEYS_EXIST=false
+            
+        fi
+
+        rm $FILE_TMP
+
+    }
+
+    TEMP_PRINT_A="Copy SSH authorized keys"
+    printf "${CYAN}${TEMP_PRINT_A}:${NC}\n"
+
+    check_ssh_authorized_keys_exist
+
+    while [ $IS_AUTHORIZED_KEYS_EXIST = false ]; do
+
+        # Check if user want to continue the process
+        ask_continue_process
+
+        # Check if SSH authorized keys exist
+        check_ssh_authorized_keys_exist
+
+    done
 
     mkdir /home/$NEW_USERNAME/.ssh
     cp /root/.ssh/authorized_keys /home/$NEW_USERNAME/.ssh/
     chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
 
-    printf "${temp}...${NC} ${GREEN}OK${NC}\n"
+    printf "${TEMP_PRINT_A}...${NC} ${GREEN}OK${NC}\n"
 
 }
 
