@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+FILE_TEMP="temp.txt"
+
+
 # update package list
 sudo apt update
 
@@ -41,15 +45,15 @@ send_test_email() {
 }
 
 # Run the following command on your mail server.
-echo -e '\x1dquit\x0d' | sleep 5 | telnet gmail-smtp-in.l.google.com 25 > temp.txt
-CHECK_PORT_25=$(cat test.txt | grep "220 mx.google.com")
+echo -e '\x1dquit\x0d' | sleep 5 | telnet gmail-smtp-in.l.google.com 25 > $FILE_TEMP
+CHECK_PORT_25=$(cat $FILE_TEMP | grep "220 mx.google.com")
 if [ "$CHECK_PORT_25" != "" ]; then 
     echo "Port 25... OK"
     send_test_email
 else 
     echo "ERROR: Port 25 CLOSED!"
 fi
-rm temp.txt
+rm $FILE_TEMP
 
 
 # REFERENCE
