@@ -9,7 +9,7 @@ FILE_CONFIG_ALIASES="/etc/aliases"
 # ....
 CURRENT_SERVER_HOSTNAME=$(hostname)
 read -p "Email hostname (eg, mail.example.com) []: " EMAIL_HOSTNAME
-read -p "Email domain (eg, example.com for user@xample.com) []: " EMAIL_DOMAIN
+read -p "Email domain (eg, example.com) []: " EMAIL_DOMAIN
 read -p "Email user alias (eg, admin) []: " EMAIL_USER_ALIAS
 
 # update package list
