@@ -371,14 +371,14 @@ copy_ssh_authorized_keys() {
 
         if [ "$TEMP_COMMAND" != "" ]; then
 
-            TEMP_PRINT="File authorized_keys is exist"
+            TEMP_PRINT="authorized_keys is exist"
             printf "${GREEN}${TEMP_PRINT}...${NC}\n"
 
             IS_AUTHORIZED_KEYS_EXIST=true
 
         else
 
-            TEMP_PRINT="ERROR: File authorized_keys is NOT available"
+            TEMP_PRINT="ERROR: authorized_keys is NOT available"
             printf "${RED}${TEMP_PRINT}...${NC}\n"
 
             IS_AUTHORIZED_KEYS_EXIST=false
