@@ -1108,12 +1108,14 @@ setup_email_server() {
     send_test_email() {
 
         TEMP_PRINT="Postfix sending test email"
-        printf "${CYAN}${TEMP_PRINT_A}:${NC}\n"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
         read -p "Receiver (eg, user@mail.com) []: " EMAIL_FOR_TEST_POSTFIX
         read -p "Message []: " MESSAGE_FOR_TEST_POSTFIX
 
         echo "$MESSAGE_FOR_TEST_POSTFIX" | sendmail $EMAIL_FOR_TEST_POSTFIX
+
+        printf "${TEMP_PRINT}...${NC} ${GREEN}OK${NC}\n"
 
     }
 
