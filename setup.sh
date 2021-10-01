@@ -1165,16 +1165,20 @@ setup_email_server() {
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     # Delete lines that contain a pattern of 'myhostname =' and 'mydestination ='
+    TEMP_PRINT="Delete lines that contain a pattern of 'myhostname =' and 'mydestination ='"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
     sudo sed -i '/myhostname =/d' $FILE_CONFIG_POSTFIX_MAIN
     sudo sed -i '/mydestination =/d' $FILE_CONFIG_POSTFIX_MAIN
 
     # Add new line with new values of 'myhostname' and 'mydestination'
+    TEMP_PRINT="Add new line with new values of 'myhostname' and 'mydestination'"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
     printf "myhostname = $EMAIL_HOSTNAME\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
     printf "mydestination = \$myhostname, $EMAIL_DOMAIN, $EMAIL_HOSTNAME, localhost.$EMAIL_DOMAIN, localhost\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
 
     sudo systemctl reload postfix
-
-    printf "${TEMP_PRINT}...${NC} ${GREEN}OK${NC}\n"
 
     # ---------------------------------------------------------------
 
@@ -1182,8 +1186,7 @@ setup_email_server() {
     TEMP_PRINT="Check Postfix config after edit"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
-    cat $FILE_CONFIG_POSTFIX_MAIN | grep myhostname
-    cat $FILE_CONFIG_POSTFIX_MAIN | grep mydestination
+    cat $FILE_CONFIG_POSTFIX_MAIN | grep -e myhostname -e mydestination
 
     # Add new line with new values of aliases
     TEMP_PRINT="Add new line with new values of aliases"
@@ -1192,26 +1195,26 @@ setup_email_server() {
     printf "root:\t${EMAIL_USER_ALIAS}\n" | sudo tee -a $FILE_CONFIG_ALIASES
     sudo newaliases
 
-    # Check Postfix version with this command:
-    TEMP_PRINT="Check Postfix version with this command:"
+    # Check Postfix version with this command
+    TEMP_PRINT="Check Postfix version with this command"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     postconf mail_version
 
-    # The ss (Socket Statistics) utility tells us that the Postfix master process is listening on TCP port 25.
-    TEMP_PRINT="The ss (Socket Statistics) utility tells us that the Postfix master process is listening on TCP port 25."
+    # Check if Postfix master process is listening on TCP port 25
+    TEMP_PRINT="Check if Postfix master process is listening on TCP port 25"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo ss -lnpt | grep master 
 
-    # Postfix ships with many binaries under the /usr/sbin/ directory, as can be seen with the following command.
-    TEMP_PRINT="Postfix ships with many binaries under the /usr/sbin/ directory, as can be seen with the following command."
+    # Postfix ships with many binaries under the /usr/sbin/ directory
+    TEMP_PRINT="Postfix ships with many binaries under the /usr/sbin/ directory"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     dpkg -L postfix | grep /usr/sbin/ 
 
-    # Open TCP Port 25 (inbound) in Firewall
-    TEMP_PRINT="Open TCP Port 25 (inbound) in Firewall"
+    # Open TCP Port 25 (inbound) in firewall
+    TEMP_PRINT="Open TCP Port 25 (inbound) in firewall"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo ufw allow 25/tcp 
