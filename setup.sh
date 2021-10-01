@@ -215,6 +215,9 @@ setup_cloud_digitalocean() {
     # Install Required Apps
     install_other_apps
 
+    # (Optional) Install Email Server
+    setup_email_server
+
     # End Setup
     end_setup
 
@@ -233,6 +236,9 @@ setup_physical_server() {
 
     # Install Required Apps
     install_other_apps
+
+    # (Optional) Install Email Server
+    setup_email_server
 
     # End Setup
     end_setup
