@@ -1146,14 +1146,14 @@ setup_email_server() {
 
     sudo apt install postfix -y
 
-    # Install telnet
-    TEMP_PRINT="Install telnet"
+    # Install telnet (to check port 25)
+    TEMP_PRINT="Install telnet (to check port 25)"
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     sudo apt install telnet -y
 
-    # Install mailutils to send and read email
-    TEMP_PRINT="Install mailutils to send and read email"
+    # Install mailutils (to send and read email)
+    TEMP_PRINT="Install mailutils to (send and read email)"
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     sudo apt install mailutils -y
