@@ -1296,8 +1296,8 @@ setup_email_server() {
     sudo mkdir /etc/opendkim
     sudo mkdir /etc/opendkim/keys
 
-    # Change the owner from root to opendkim and make sure only opendkim user can read and write to the keys directory
-    TEMP_PRINT="Change the owner from root to opendkim and make sure only opendkim user can read and write to the keys directory"
+    # Change the owner from 'root' to 'opendkim' (make sure only 'opendkim' user can read and write to the keys directory)
+    TEMP_PRINT="Change the owner from 'root' to 'opendkim' (make sure only 'opendkim' user can read and write to the keys directory)"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo chown -R opendkim:opendkim /etc/opendkim
@@ -1334,19 +1334,18 @@ setup_email_server() {
 
     sudo opendkim-genkey -b 2048 -d $EMAIL_DOMAIN -D /etc/opendkim/keys/$EMAIL_DOMAIN -s default -v
     
-    # Make opendkim as the owner of the private key
-    TEMP_PRINT="Make opendkim as the owner of the private key"
+    # Make 'opendkim' as the owner of the Private Key
+    TEMP_PRINT="Make 'opendkim' as the owner of the Private Key"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo chown opendkim:opendkim /etc/opendkim/keys/$EMAIL_DOMAIN/default.private 
     
-    # And change the permission, so only the opendkim user has read and write access to the file
-    TEMP_PRINT="And change the permission, so only the opendkim user has read and write access to the file"
+    # Change the permission (only the opendkim user has read and write access to the file)
+    TEMP_PRINT="Change the permission (only the opendkim user has read and write access to the file)"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo chmod 600 /etc/opendkim/keys/$EMAIL_DOMAIN/default.private 
 
-    # Publish Your Public Key in DNS Records
     # Display the public key
     TEMP_PRINT="Display the public key"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
@@ -1355,14 +1354,17 @@ setup_email_server() {
 
     # -------------------------------------------------------------------
 
+    # Publish the Public Key in DNS Records
+    TEMP_PRINT="Publish the Public Key in DNS Records"
+    printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
     # Check if user want to continue the process
     ask_continue_process
 
     # -------------------------------------------------------------------
 
-    # Test DKIM Key
-    # Enter the following command on Ubuntu server to test your key
-    TEMP_PRINT="Enter the following command on Ubuntu server to test your key"
+    # Test the DKIM Key
+    TEMP_PRINT="Test the DKIM Key"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo opendkim-testkey -d $EMAIL_DOMAIN -s default -vvv
@@ -1376,8 +1378,8 @@ setup_email_server() {
     sudo mkdir /var/spool/postfix/opendkim
     sudo chown opendkim:postfix /var/spool/postfix/opendkim
 
-    # Then edit the OpenDKIM main configuration file
-    TEMP_PRINT="Then edit the OpenDKIM main configuration file"
+    # Edit the OpenDKIM main configuration file
+    TEMP_PRINT="Edit the OpenDKIM main configuration file"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo sed -i "s/local:\/run\/opendkim\/opendkim.sock/local:\/var\/spool\/postfix\/opendkim\/opendkim.sock/g" $FILE_CONFIG_OPENDKIM
