@@ -1221,22 +1221,22 @@ setup_email_server() {
 
     # ---------------------------------------------------------------
 
-    # Configuring SPF Policy Agen to detecting forged incoming emails
-    TEMP_PRINT="Configuring SPF Policy Agen to detecting forged incoming emails"
+    # Install SPF Policy Agen (to detect forged incoming emails)
+    TEMP_PRINT="Install SPF Policy Agen (to detect forged incoming emails)"
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     sudo apt install postfix-policyd-spf-python -y
 
-    # Edit the Postfix master process configuration file to start the SPF policy daemon when it’s starting itself
-    TEMP_PRINT="Edit the Postfix master process configuration file to start the SPF policy daemon when it’s starting itself"
+    # Edit the Postfix master process configuration file (to start the SPF policy daemon when it’s starting itself)
+    TEMP_PRINT="Edit the Postfix master process configuration file (to start the SPF policy daemon when it’s starting itself)"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
     
     TEMP_PRINT_1="policyd-spf  unix  -       n       n       -       0       spawn"
     TEMP_PRINT_2="user=policyd-spf argv=/usr/bin/policyd-spf"
     printf "\n$TEMP_PRINT_1\n  $TEMP_PRINT_2\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MASTER
 
-    # Impose a restriction on incoming emails by rejecting unauthorized email and checking SPF record
-    TEMP_PRINT="Impose a restriction on incoming emails by rejecting unauthorized email and checking SPF record"
+    # Impose a restriction on incoming emails (by rejecting unauthorized email and checking SPF record)
+    TEMP_PRINT="Impose a restriction on incoming emails (by rejecting unauthorized email and checking SPF record)"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
     
     TEMP_PRINT_1="policyd-spf_time_limit = 3600"
@@ -1257,14 +1257,14 @@ setup_email_server() {
 
     sudo apt install opendkim opendkim-tools -y
 
-    # Add postfix user to opendkim group
-    TEMP_PRINT="Add postfix user to opendkim group"
+    # Add postfix user to OpenDKIM group
+    TEMP_PRINT="Add postfix user to OpenDKIM group"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo gpasswd -a postfix opendkim 
 
-    # Edit OpenDKIM main configuration file
-    TEMP_PRINT="Edit OpenDKIM main configuration file"
+    # Edit OpenDKIM configuration files
+    TEMP_PRINT="Edit OpenDKIM configuration files"
     printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
 
     sudo sed -i "s/#Canonicalization\tsimple/Canonicalization\tsimple/g" $FILE_CONFIG_OPENDKIM
