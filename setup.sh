@@ -1167,8 +1167,8 @@ setup_email_server() {
     sudo sed -i '/mydestination =/d' $FILE_CONFIG_POSTFIX_MAIN
 
     # Add new line with new values of 'myhostname' and 'mydestination'
-    printf "myhostname = ${EMAIL_HOSTNAME}\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
-    printf "mydestination = \$myhostname, ${EMAIL_DOMAIN}, ${EMAIL_HOSTNAME}, localhost.${EMAIL_DOMAIN}, localhost\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
+    printf "myhostname = $EMAIL_HOSTNAME\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
+    printf "mydestination = \$myhostname, $EMAIL_DOMAIN, $EMAIL_HOSTNAME, localhost.$EMAIL_DOMAIN, localhost\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
 
     sudo systemctl reload postfix
 
@@ -1300,19 +1300,19 @@ setup_email_server() {
 
     sudo touch $FILE_CONFIG_OPENDKIM_SIGNINGTABLE
 
-    TEMP_PRINT="*@${EMAIL_DOMAIN}    default._domainkey.${EMAIL_DOMAIN}"
+    TEMP_PRINT="*@$EMAIL_DOMAIN    default._domainkey.$EMAIL_DOMAIN"
     printf "\n$TEMP_PRINT\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_SIGNINGTABLE
 
     sudo touch $FILE_CONFIG_OPENDKIM_KEYTABLE
 
-    TEMP_PRINT="default._domainkey.${EMAIL_DOMAIN}    ${EMAIL_DOMAIN}:default:/etc/opendkim/keys/${EMAIL_DOMAIN}/default.private"
+    TEMP_PRINT="default._domainkey.$EMAIL_DOMAIN    $EMAIL_DOMAIN:default:/etc/opendkim/keys/$EMAIL_DOMAIN/default.private"
     printf "\n$TEMP_PRINT\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_KEYTABLE
 
     sudo touch $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS
 
     TEMP_PRINT_1="#127.0.0.1"
     TEMP_PRINT_2="localhost"
-    TEMP_PRINT_3="*.${EMAIL_DOMAIN}"
+    TEMP_PRINT_3="*.$EMAIL_DOMAIN"
     printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n\n$TEMP_PRINT_3\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS
 
     # -------------------------------------------------------------------
