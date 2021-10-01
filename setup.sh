@@ -1104,6 +1104,30 @@ reboot_system() {
 # Setup for Email Server
 setup_email_server() {
 
+    # Ask if user want to set up an email server
+    ask_setup_email_server() {
+
+        TEMP_PRINT="Set up an email server? [y/N] "
+        read -p "$TEMP_PRINT" USER_OPTION_SETUP_EMAIL_SERVER
+
+        if [ "$USER_OPTION_SETUP_EMAIL_SERVER" == "y" ] || [ "$USER_OPTION_SETUP_EMAIL_SERVER" == "Y" ]; then
+
+            TEMP_PRINT="Email server WILL be set up"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            
+            is_setup_email_server=true
+
+        else
+
+            TEMP_PRINT="Email server will NOT be set up"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            is_setup_email_server=false
+
+        fi
+
+    }
+
     # Sending Test Email
     send_test_email() {
 
