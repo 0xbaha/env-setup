@@ -367,37 +367,24 @@ copy_ssh_authorized_keys() {
     # Check if SSH authorized keys exist
     check_ssh_authorized_keys_exist() {
 
-        FILE_AUTHORIZED_KEYS="~/.ssh/authorized_keys"
+        TEMP_COMMAND=$(cat ~/.ssh/authorized_keys)
 
-        if [ -f $FILE_AUTHORIZED_KEYS ]; then
+        if [ "$TEMP_COMMAND" != "" ]; then
 
-            TEMP_COMMAND=$(cat \~/.ssh/authorized_keys)
+            TEMP_PRINT="File authorized_keys is exist"
+            printf "${GREEN}${TEMP_PRINT}...${NC}\n"
 
-            if [ "$TEMP_COMMAND" != "" ]; then
+            IS_AUTHORIZED_KEYS_EXIST=true
 
-                TEMP_PRINT="File authorized_keys is exist"
-                printf "${GREEN}${TEMP_PRINT}...${NC}\n"
-
-                IS_AUTHORIZED_KEYS_EXIST=true
-
-            else
-
-                TEMP_PRINT="ERROR: File authorized_keys is EMPTY"
-                printf "${RED}${TEMP_PRINT}...${NC}\n"
-
-                IS_AUTHORIZED_KEYS_EXIST=false
-
-            fi
-            
         else
 
             TEMP_PRINT="ERROR: File authorized_keys is NOT available"
             printf "${RED}${TEMP_PRINT}...${NC}\n"
 
             IS_AUTHORIZED_KEYS_EXIST=false
-            
-        fi
 
+            fi
+            
     }
 
     TEMP_PRINT_A="Copy SSH authorized keys"
