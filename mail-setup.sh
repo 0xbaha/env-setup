@@ -6,6 +6,26 @@ FILE_CONFIG_POSTFIX_MAIN="/etc/postfix/main.cf"
 FILE_CONFIG_POSTFIX_MASTER="/etc/postfix/master.cf"
 FILE_CONFIG_ALIASES="/etc/aliases"
 FILE_CONFIG_OPENDKIM="/etc/opendkim.conf"
+FILE_CONFIG_OPENDKIM_SIGNINGTABLE="/etc/opendkim/signing.table"
+FILE_CONFIG_OPENDKIM_KEYTABLE="/etc/opendkim/key.table"
+FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS="/etc/opendkim/trusted.hosts"
+
+# Check if user want to continue the process
+ask_continue_process() {
+
+    TEMP_PRINT="Continue process? [Y/n] "
+    read -p "$TEMP_PRINT" USER_OPTION_CONTINUE_PROCESS
+
+    if [ "$USER_OPTION_CONTINUE_PROCESS" == "n" ] || [ "$USER_OPTION_CONTINUE_PROCESS" == "N" ]; then
+
+        TEMP_PRINT="Process aborted"
+        printf "${RED}${TEMP_PRINT}...${NC}\n"
+
+        exit
+
+    fi
+
+}
 
 
 # ....
@@ -113,13 +133,67 @@ TEMP_PRINT_5="SignatureAlgorithm  rsa-sha256 "
 printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n" | sudo tee -a $FILE_CONFIG_OPENDKIM
 
 TEMP_PRINT_1="# Map domains in From addresses to keys used to sign messages"
-TEMP_PRINT_2="KeyTable           refile:/etc/opendkim/key.table"
-TEMP_PRINT_3="SigningTable       refile:/etc/opendkim/signing.table"
+TEMP_PRINT_2="KeyTable           refile:$FILE_CONFIG_OPENDKIM_KEYTABLE"
+TEMP_PRINT_3="SigningTable       refile:$FILE_CONFIG_OPENDKIM_SIGNINGTABLE"
 TEMP_PRINT_4="# Hosts to ignore when verifying signatures"
-TEMP_PRINT_5="ExternalIgnoreList  /etc/opendkim/trusted.hosts"
+TEMP_PRINT_5="ExternalIgnoreList  $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS"
 TEMP_PRINT_6="# A set of internal hosts whose mail should be signed"
-TEMP_PRINT_7="InternalHosts       /etc/opendkim/trusted.hosts "
+TEMP_PRINT_7="InternalHosts       $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS "
 printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n\n$TEMP_PRINT_6\n$TEMP_PRINT_7\n" | sudo tee -a $FILE_CONFIG_OPENDKIM
+
+# -------------------------------------------------------------------
+
+# Create a directory structure for OpenDKIM
+sudo mkdir /etc/opendkim
+sudo mkdir /etc/opendkim/keys
+
+# Change the owner from root to opendkim and make sure only opendkim user can read and write to the keys directory.
+sudo chown -R opendkim:opendkim /etc/opendkim
+sudo chmod go-rw /etc/opendkim/keys 
+
+
+sudo touch $FILE_CONFIG_OPENDKIM_SIGNINGTABLE
+
+TEMP_PRINT="*@${EMAIL_DOMAIN}    default._domainkey.${EMAIL_DOMAIN}"
+printf "\n$TEMP_PRINT\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_SIGNINGTABLE
+
+sudo touch $FILE_CONFIG_OPENDKIM_KEYTABLE
+
+TEMP_PRINT="default._domainkey.${EMAIL_DOMAIN}    ${EMAIL_DOMAIN}:default:/etc/opendkim/keys/${EMAIL_DOMAIN}/default.private"
+printf "\n$TEMP_PRINT\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_KEYTABLE
+
+sudo touch $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS
+
+TEMP_PRINT_1="#127.0.0.1"
+TEMP_PRINT_2="localhost"
+TEMP_PRINT_3="*.${EMAIL_DOMAIN}"
+printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n\n$TEMP_PRINT_3\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS
+
+# -------------------------------------------------------------------
+
+# Create a separate folder for the domain.
+sudo mkdir /etc/opendkim/keys/$EMAIL_DOMAIN 
+# Generate keys using opendkim-genkey tool.
+sudo opendkim-genkey -b 2048 -d $EMAIL_DOMAIN -D /etc/opendkim/keys/$EMAIL_DOMAIN -s default -v
+# Make opendkim as the owner of the private key.
+sudo chown opendkim:opendkim /etc/opendkim/keys/$EMAIL_DOMAIN/default.private 
+# And change the permission, so only the opendkim user has read and write access to the file.
+sudo chmod 600 /etc/opendkim/keys/$EMAIL_DOMAIN/default.private 
+
+# Publish Your Public Key in DNS Records
+# Display the public key
+sudo cat /etc/opendkim/keys/$EMAIL_DOMAIN/default.txt
+
+# -------------------------------------------------------------------
+
+# Check if user want to continue the process
+ask_continue_process
+
+# -------------------------------------------------------------------
+
+# Test DKIM Key
+# Enter the following command on Ubuntu server to test your key.
+sudo opendkim-testkey -d $EMAIL_DOMAIN -s default -vvv
 
 # -------------------------------------------------------------------
 
