@@ -4,6 +4,11 @@
 FILE_TEMP="temp.txt"
 
 
+# ....
+CURRENT_SERVER_HOSTNAME=$(hostname)
+read -p "Email hostname (eg, mail.example.com) []: " EMAIL_HOSTNAME
+read -p "Email domain (eg, example.com for user@xample.com) []: " EMAIL_DOMAIN
+
 # update package list
 sudo apt update
 
@@ -13,24 +18,35 @@ sudo apt install postfix -y
 # install the telnet utility to check if it’s open or blocked.
 sudo apt install telnet -y
 
+# Replace server hostname with email hostname in Postfix config
+TEMP_PRINT="Replace server hostname with email hostname in Postfix config"
+printf "$TEMP_PRINT\n"
+
+sudo sed -i "s/$CURRENT_SERVER_HOSTNAME/$EMAIL_HOSTNAME/g" /etc/postfix/main.cf
+sudo systemctl restart postfix
+
 # Check Postfix version with this command:
 TEMP_PRINT="Check Postfix version with this command:"
 printf "$TEMP_PRINT\n"
+
 postconf mail_version
 
 # The ss (Socket Statistics) utility tells us that the Postfix master process is listening on TCP port 25.
 TEMP_PRINT="The ss (Socket Statistics) utility tells us that the Postfix master process is listening on TCP port 25."
 printf "$TEMP_PRINT\n"
+
 sudo ss -lnpt | grep master 
 
 # Postfix ships with many binaries under the /usr/sbin/ directory, as can be seen with the following command.
 TEMP_PRINT="Postfix ships with many binaries under the /usr/sbin/ directory, as can be seen with the following command."
 printf "$TEMP_PRINT\n"
+
 dpkg -L postfix | grep /usr/sbin/ 
 
 # Open TCP Port 25 (inbound) in Firewall
 TEMP_PRINT="Open TCP Port 25 (inbound) in Firewall"
 printf "$TEMP_PRINT\n"
+
 sudo ufw allow 25/tcp 
 
 # Sending Test Email
