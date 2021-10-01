@@ -39,7 +39,7 @@ This repository contain a [script](setup.sh) that can be used to set up an envir
 
 ### Cloud
 
-Make sure to add the SSH keys in the **Client Area** before starting the setup below.
+Make sure to add the `SSH keys` in the **Client Area** before starting the setup below.
 
 #### DigitalOcean
 
@@ -57,14 +57,14 @@ Make sure to add the SSH keys in the **Client Area** before starting the setup b
 
 #### Hostwinds
 
-1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the [required specification](#hostwinds) and choose `SSH Keys` (that already added) for the **Authentication**.
+1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the [required specification](#hostwinds-1) and choose `SSH Keys` (that already added) for the **Authentication**.
 
 
 1. Log in to the server using SSH:
     ```bash
      ssh root@SERVER_IP_ADDRESS     # login using SSH
     ```
-1. Download and install the required apps (Git and UFW).
+1. Download and install the prerequisite apps (Git and UFW).
     ```bash
     sudo apt update && sudo apt install git ufw -y
     ```
