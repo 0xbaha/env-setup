@@ -368,7 +368,7 @@ copy_ssh_authorized_keys() {
     # Check if SSH authorized keys exist
     check_ssh_authorized_keys_exist() {
 
-        TEMP_COMMAND=$(cat \~./ssh/authorized_keys)
+        TEMP_COMMAND=$(cat \~/.ssh/authorized_keys)
 
         if [ "$TEMP_COMMAND" != "" ]; then
 
