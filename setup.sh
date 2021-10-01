@@ -306,10 +306,10 @@ create_user() {
         # Create sudo user
         create_sudo_user
 
-    fi
+        # Copy SSH authorized keys
+        copy_ssh_authorized_keys
 
-    # Copy SSH authorized keys
-    copy_ssh_authorized_keys
+    fi
 
 }
 
