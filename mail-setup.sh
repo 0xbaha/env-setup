@@ -5,6 +5,7 @@ FILE_TEMP="temp.txt"
 FILE_CONFIG_POSTFIX_MAIN="/etc/postfix/main.cf"
 FILE_CONFIG_POSTFIX_MASTER="/etc/postfix/master.cf"
 FILE_CONFIG_ALIASES="/etc/aliases"
+FILE_CONFIG_OPENDKIM="/etc/opendkim.conf"
 
 
 # ....
@@ -89,6 +90,36 @@ TEMP_PRINT_5="reject_unauth_destination,"
 TEMP_PRINT_6="check_policy_service unix:private/policyd-spf"
 printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n   $TEMP_PRINT_3\n   $TEMP_PRINT_4\n   $TEMP_PRINT_5\n   $TEMP_PRINT_6\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
 sudo systemctl restart postfix
+
+# -------------------------------------------------------------------
+
+# Setting up DKIM
+# First, install OpenDKIM which is an open-source implementation of the DKIM sender authentication system.
+sudo apt install opendkim opendkim-tools -y
+
+# Then add postfix user to opendkim group.
+sudo gpasswd -a postfix opendkim 
+
+# Edit OpenDKIM main configuration file.
+sudo sed -i "s/#Canonicalization\tsimple/Canonicalization\tsimple/g" $FILE_CONFIG_OPENDKIM
+sudo sed -i "s/#Mode\t\t\tsv/Mode\t\t\tsv/g" $FILE_CONFIG_OPENDKIM
+sudo sed -i "s/#SubDomains\t\tno/SubDomains\t\tno/g" $FILE_CONFIG_OPENDKIM
+
+TEMP_PRINT_1="AutoRestart         yes"
+TEMP_PRINT_2="AutoRestartRate     10/1M"
+TEMP_PRINT_3="Background          yes"
+TEMP_PRINT_4="DNSTimeout          5"
+TEMP_PRINT_5="SignatureAlgorithm  rsa-sha256 "
+printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n" | sudo tee -a $FILE_CONFIG_OPENDKIM
+
+TEMP_PRINT_1="# Map domains in From addresses to keys used to sign messages"
+TEMP_PRINT_2="KeyTable           refile:/etc/opendkim/key.table"
+TEMP_PRINT_3="SigningTable       refile:/etc/opendkim/signing.table"
+TEMP_PRINT_4="# Hosts to ignore when verifying signatures"
+TEMP_PRINT_5="ExternalIgnoreList  /etc/opendkim/trusted.hosts"
+TEMP_PRINT_6="# A set of internal hosts whose mail should be signed"
+TEMP_PRINT_7="InternalHosts       /etc/opendkim/trusted.hosts "
+printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n\n$TEMP_PRINT_6\n$TEMP_PRINT_7\n" | sudo tee -a $FILE_CONFIG_OPENDKIM
 
 # -------------------------------------------------------------------
 
