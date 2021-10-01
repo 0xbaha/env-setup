@@ -1146,8 +1146,8 @@ setup_email_server() {
 
     sudo apt install postfix -y
 
-    # Install the telnet utility to check if it’s open or blocked.
-    TEMP_PRINT="Install the telnet utility to check if it’s open or blocked."
+    # Install telnet
+    TEMP_PRINT="Install telnet"
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     sudo apt install telnet -y
@@ -1391,21 +1391,23 @@ setup_email_server() {
 
     # -------------------------------------------------------------------
 
-    
+    # Check if port 25 open or blocked
+    TEMP_PRINT="Check if port 25 open or blocked"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     # Run the following command on your mail server.
     echo -e '\x1dquit\x0d' | sleep 5 | telnet gmail-smtp-in.l.google.com 25 > $FILE_TEMP
     CHECK_PORT_25=$(cat $FILE_TEMP | grep "220 mx.google.com")
     if [ "$CHECK_PORT_25" != "" ]; then 
 
-        echo "Port 25... OK"
+        printf "Port 25... ${GREEN}OK${NC}\n"
 
         # Sending Test Email
         send_test_email
 
     else 
 
-        echo "ERROR: Port 25 CLOSED!"
+        printf "${RED}ERROR: Port 25 CLOSED!${NC}\n"
 
     fi
 
