@@ -43,7 +43,7 @@ Make sure to add the SSH keys in the **Client Area** before starting the setup b
 
 #### DigitalOcean
 
-1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` for the **Authentication**.
+1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` (that already added) for the **Authentication**.
 1. Login to the server.
     ```bash
     ssh root@SERVER_IP_ADDRESS     # login using SSH
@@ -57,7 +57,7 @@ Make sure to add the SSH keys in the **Client Area** before starting the setup b
 
 #### Hostwinds
 
-1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the required specification, and choose SSH Keys (that already added) for the **Authentication**.
+1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the [required specification](#hostwinds) and choose `SSH Keys` (that already added) for the **Authentication**.
 
 
 1. Log in to the server using SSH:
@@ -125,6 +125,16 @@ Operating system that already tested on DigitalOcean:
 | No | Type | CPU | RAM | SSD | Tested? | 
 |:---:|---|---|---|---|:---:|
 | 1 | Shared CPU (Basic) | 1 CPU | 1 GB | 25 GB | ✅ |
+
+### Hostwinds
+
+Operating system that already tested on Hostwinds:
+
+1. [Ubuntu 20.04 (LTS) x64](https://ubuntu.com/download/server)
+
+| No | Product | CPU | RAM | SSD | Tested? | 
+|:---:|---|---|---|---|:---:|
+| 1 | Unmanaged SSD Cloud 1 | 1 Core | 1 GB | 30 GB | ✅ |
 
 ### Physical Server
 
