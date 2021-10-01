@@ -6,7 +6,7 @@ This repository contain a [script](setup.sh) that can be used to set up an envir
 
 - Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
 - Cloud setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment.
-- Bare-metal setup for **production** environment.
+- Bare-metal (physical server) setup for **production** environment.
 
 ### Mail Server
 
@@ -122,7 +122,7 @@ Operating system that already tested on DigitalOcean:
 
 1. [Ubuntu 20.04 (LTS) x64](https://ubuntu.com/download/server)
 
-| No | Type | CPU | RAM | SSD | Tested? | 
+| No | Product | CPU | RAM | SSD | Tested? | 
 |:---:|---|---|---|---|:---:|
 | 1 | Shared CPU (Basic) | 1 CPU | 1 GB | 25 GB | ✅ |
 
