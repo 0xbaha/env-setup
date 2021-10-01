@@ -16,7 +16,7 @@ This repository contain a [script](setup.sh) that can be used to set up an envir
 
 ### Virtual Machine
 
-Virtual machine that will be used in this section is VirtualBox.
+Virtual machine that will be used in this section is [VirtualBox](https://www.virtualbox.org/).
 
 #### Desktop
 
