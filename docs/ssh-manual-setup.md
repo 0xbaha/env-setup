@@ -4,12 +4,15 @@
 #!/bin/bash
 
 # create ssh directory
-mkdir .ssh
-chmod 700 .ssh
+mkdir ~/.ssh
+chmod 700 ~/.ssh
 
 # create authorized_keys file
-touch .ssh/authorized_keys
-chmod 600 .ssh/authorized_keys
+touch ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+# add the value of authorized_keys
+vi ~/.ssh/authorized_keys
 
 # create key files
 touch ~/.ssh/id_rsa

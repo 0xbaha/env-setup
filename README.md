@@ -1,29 +1,35 @@
 # Environment Setup
 
-Set up an environment for web development, including the phase of developing, testing, staging, and production.
+This repository contain a [script](setup.sh) that can be used to set up an environment for [web development](#web-development) and [mail server](#mail-server).
 
 ### Web Development
 
-- Virtual machine setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
-- Server setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) for **testing** and **staging** environment.
-- Setup in physical server for **production** environment.
+- [Virtual machine](#virtual-machine) setup in VirtualBox 6.1[<sup>1</sup>](#footnotes) for **development** environment.
+- [Cloud](#cloud) setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment.
+- [Bare-metal (physical server)](#physical-server) setup for **production** environment.
+
+### Mail Server
+
+- Set up a mail server in cloud.
 
 ## How to Start
 
-### VirtualBox
+### Virtual Machine
 
-**Desktop**
+The virtual machine that will be used is [VirtualBox](https://www.virtualbox.org/).
 
-1. Download and install[<sup>2</sup>](#footnotes) the [guest OS](#virtualbox-1).
+#### Desktop
+
+1. Download and install[<sup>2</sup>](#footnotes) the [guest OS](#virtualbox).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
 1. [Download](https://github.com/ba1x/env-setup/archive/refs/heads/main.zip) this project using the **host**.
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
 1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `1. Vbox (Desktop)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-**Server**
+#### Server
 
-1. Download and [install](docs/install-ubuntu-server.md)[<sup>3</sup>](#footnotes) the [guest OS](#virtualbox-1).
+1. Download and [install](docs/install-ubuntu-server.md)[<sup>3</sup>](#footnotes) the [guest OS](#virtualbox).
 1. [User Setup](#user-setup) in the **guest**.
 1. [Fix Error](#fix-error) in the **guest**.
 1. Clone this project and open the folder.
@@ -33,9 +39,13 @@ Set up an environment for web development, including the phase of developing, te
     ```
 1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox (Server)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-### DigitalOcean
+### Cloud
 
-1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` for the **Authentication**.
+Make sure to add the `SSH keys` in the **Client Area** before starting the setup below.
+
+#### DigitalOcean
+
+1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` (that already added) for the **Authentication**.
 1. Login to the server.
     ```bash
     ssh root@SERVER_IP_ADDRESS     # login using SSH
@@ -45,8 +55,27 @@ Set up an environment for web development, including the phase of developing, te
     git clone https://github.com/ba1x/env-setup.git
     cd env-setup
     ```
-1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
+1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean/Hostwinds)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
+#### Hostwinds
+
+1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the [required specification](#hostwinds-1) and choose `SSH Keys` (that already added) for the **Authentication**.
+
+
+1. Log in to the server using SSH:
+    ```bash
+     ssh root@SERVER_IP_ADDRESS     # login using SSH
+    ```
+1. Download and install the prerequisite apps (Git and UFW).
+    ```bash
+    sudo apt update && sudo apt install git ufw -y
+    ```
+1. Clone this project and open the folder.
+     ```bash
+    git clone https://github.com/ba1x/env-setup.git
+    cd env-setup
+    ```
+1. Run command `./setup.sh` and choose option `3. Cloud (DigitalOcean/Hostwinds)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 ### Physical Server
 
@@ -75,14 +104,14 @@ Operating system that already tested on VirtualBox:
 1. [Ubuntu Server 20.04.3 LTS](https://ubuntu.com/download/server)[<sup>3</sup>](#footnotes)
 
 
-**Settings**
+#### Settings
 
 | No | Type | CPU | RAM | HDD | VGA | Network | Tested? |
 |:---:|---|---|---|---|---|:---:|:---:|
 | 1 | Desktop | 2 CPUs | 4096 MB | 25 GB | 64 MB | NAT | ✅ |
 | 2 | Server | 1 CPU | 1024 MB | 10 GB | 16 MB | Bridged | ✅ |
 
-**Profile**
+#### Profile
 
 | No | VM Name | Name | Hostname | Username | Password |
 |:---:|---|:---:|---|:---:|:---:|
@@ -95,9 +124,19 @@ Operating system that already tested on DigitalOcean:
 
 1. [Ubuntu 20.04 (LTS) x64](https://ubuntu.com/download/server)
 
-| No | Type | CPU | RAM | SSD | Tested? | 
+| No | Product | CPU | RAM | SSD | Tested? | 
 |:---:|---|---|---|---|:---:|
 | 1 | Shared CPU (Basic) | 1 CPU | 1 GB | 25 GB | ✅ |
+
+### Hostwinds
+
+Operating system that already tested on Hostwinds:
+
+1. [Ubuntu 20.04 (LTS) x64](https://ubuntu.com/download/server)
+
+| No | Product | CPU | RAM | SSD | Tested? | 
+|:---:|---|---|---|---|:---:|
+| 1 | Unmanaged SSD Cloud 1 | 1 Core | 1 GB | 30 GB | ✅ |
 
 ### Physical Server
 

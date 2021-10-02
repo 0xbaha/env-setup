@@ -26,6 +26,20 @@ DNS_NAMESERVER="208.67.222.222"
 
 # ----------------------------------------------------------------- #
 
+# EMAIL SETUP
+
+FILE_TEMP="temp.txt"
+FILE_CONFIG_POSTFIX_MAIN="/etc/postfix/main.cf"
+FILE_CONFIG_POSTFIX_MASTER="/etc/postfix/master.cf"
+FILE_CONFIG_ALIASES="/etc/aliases"
+FILE_CONFIG_OPENDKIM="/etc/opendkim.conf"
+FILE_CONFIG_OPENDKIM_SIGNINGTABLE="/etc/opendkim/signing.table"
+FILE_CONFIG_OPENDKIM_KEYTABLE="/etc/opendkim/key.table"
+FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS="/etc/opendkim/trusted.hosts"
+FILE_CONFIG_OPENDKIM_DEFAULT="/etc/default/opendkim"
+
+# ----------------------------------------------------------------- # 
+
 # OTHERS
 
 FILE_SETUP="setup.sh"
@@ -92,8 +106,18 @@ ask_user_option() {
 
     ask_user() {
 
-        TEMP_PRINT="Which type?\n  1. VBox (Desktop)\n  2. VBox (Server)\n  3. Cloud (DigitalOcean)\n  4. Physical Server\n"
-        printf "$TEMP_PRINT"
+        TEMP_PRINT_A="${CYAN}Which set up will you do?${NC}\n"
+        TEMP_PRINT_1="  1. VirtualBox (Desktop)\n"
+        TEMP_PRINT_2="  2. VirtualBox (Server)\n"
+        TEMP_PRINT_3="  3. Cloud (DigitalOcean/Hostwinds)\n"
+        TEMP_PRINT_4="  4. Bare-metal (physical server)\n"
+        TEMP_PRINT_5="  5. Email Server (${RED}required${NC} to set up ${YELLOW}at least${NC} 1 of option 1-4)\n"
+        printf "$TEMP_PRINT_A"
+        printf "$TEMP_PRINT_1"
+        printf "$TEMP_PRINT_2"
+        printf "$TEMP_PRINT_3"
+        printf "$TEMP_PRINT_4"
+        printf "$TEMP_PRINT_5"
 
         TEMP_PRINT="Option: "
         read -p "$TEMP_PRINT" USER_OPTION
@@ -114,6 +138,10 @@ ask_user_option() {
 
             setup_physical_server
 
+        elif [ "$USER_OPTION" == "5" ]; then
+
+            setup_email_server
+
         else
 
             TEMP_PRINT="ERROR: Wrong option"
@@ -125,7 +153,7 @@ ask_user_option() {
 
     ask_user
 
-    ARR_OPTIONS=(1 2 3 4)
+    ARR_OPTIONS=(1 2 3 4 5)
 
     while ! [[ ${ARR_OPTIONS[*]} =~ (^|[[:space:]])"$USER_OPTION"($|[[:space:]]) ]]; do
         ask_user
@@ -187,6 +215,9 @@ setup_cloud_digitalocean() {
     # Install Required Apps
     install_other_apps
 
+    # (Optional) Install Email Server
+    setup_email_server
+
     # End Setup
     end_setup
 
@@ -206,6 +237,9 @@ setup_physical_server() {
     # Install Required Apps
     install_other_apps
 
+    # (Optional) Install Email Server
+    setup_email_server
+
     # End Setup
     end_setup
 
@@ -218,7 +252,7 @@ setup_physical_server() {
 create_user() {
 
     # Check if User want to create new sudo user
-    ask_create_user() {
+    ask_create_sudo_user() {
 
         TEMP_PRINT="Create new sudo user? [Y/n] "
         read -p "$TEMP_PRINT" user_option_create_user
@@ -228,22 +262,72 @@ create_user() {
             TEMP_PRINT="Sudo user will NOT be created"
             printf "${RED}${TEMP_PRINT}...${NC}\n"
 
-            is_create_user=false
+            is_create_sudo_user=false
 
         else
 
             TEMP_PRINT="Sudo user WILL be created"
             printf "${GREEN}${TEMP_PRINT}...${NC}\n"
             
-            is_create_user=true
+            is_create_sudo_user=true
 
         fi
 
     }
 
-    ask_create_user
+    # Check if user exist
+    check_user_exist() {
 
-    if [ "$is_create_user" = true ]; then
+        id -u "$NEW_USERNAME" &> $FILE_TMP
+        temp1=$(cat $FILE_TMP | grep id)
+
+        if [ "$temp1" == "" ]; then
+
+            temp="User \"$NEW_USERNAME\" is exist"
+            printf "${RED}${temp}!${NC}\n"
+
+            IS_USER_EXIST=true  
+            
+        else
+
+            IS_USER_EXIST=false
+            IS_CONTINUE_CREATE_USER=false
+            
+        fi
+
+        rm $FILE_TMP
+
+    }
+
+    # Create sudo user
+    create_sudo_user() {
+
+        temp="Create sudo user"
+        printf "${CYAN}${temp}:${NC}\n"
+
+        IS_CONTINUE_CREATE_USER=true
+
+        while [ $IS_CONTINUE_CREATE_USER = true ] || [ $IS_USER_EXIST = true ]; do
+
+            # Check new username
+            read -p "Enter username: " NEW_USERNAME
+
+            # Check if user exist
+            check_user_exist
+
+        done
+
+        # Create the user
+        sudo adduser $NEW_USERNAME
+        
+        # Add to sudo group
+        sudo usermod -aG sudo $NEW_USERNAME
+
+    }
+
+    ask_create_sudo_user
+
+    if [ "$is_create_sudo_user" = true ]; then
 
         # Create sudo user
         create_sudo_user
@@ -303,68 +387,52 @@ basic_setup() {
 
 # -------------------------------------------------------------------
 
-# Create sudo user
-create_sudo_user() {
-
-    # Check if user exist
-    check_user_exist() {
-
-        id -u "$NEW_USERNAME" &> $FILE_TMP
-        temp1=$(cat $FILE_TMP | grep id)
-
-        if [ "$temp1" == "" ]; then
-
-            temp="User \"$NEW_USERNAME\" is exist"
-            printf "${RED}${temp}!${NC}\n"
-
-            IS_USER_EXIST=true  
-            
-        else
-
-            IS_USER_EXIST=false
-            IS_CONTINUE_CREATE_USER=false
-            
-        fi
-
-        rm $FILE_TMP
-
-    }
-
-    temp="Create sudo user"
-    printf "${CYAN}${temp}:${NC}\n"
-
-    IS_CONTINUE_CREATE_USER=true
-
-    while [ $IS_CONTINUE_CREATE_USER = true ] || [ $IS_USER_EXIST = true ]; do
-
-        # Check new username
-        read -p "Enter username: " NEW_USERNAME
-
-        # Check if user exist
-        check_user_exist
-
-    done
-
-    # Create the user
-    sudo adduser $NEW_USERNAME
-    
-    # Add to sudo group
-    sudo usermod -aG sudo $NEW_USERNAME
-
-}
-
-
 # Copy SSH authorized keys
 copy_ssh_authorized_keys() {
 
-    temp="Copy SSH authorized keys"
-    printf "${CYAN}${temp}:${NC}\n"
+    # Check if SSH authorized keys exist
+    check_ssh_authorized_keys_exist() {
+
+        TEMP_COMMAND=$(cat ~/.ssh/authorized_keys)
+
+        if [ "$TEMP_COMMAND" != "" ]; then
+
+            TEMP_PRINT="authorized_keys is exist"
+            printf "${GREEN}${TEMP_PRINT}...${NC}\n"
+
+            IS_AUTHORIZED_KEYS_EXIST=true
+
+        else
+
+            TEMP_PRINT="ERROR: authorized_keys is NOT available"
+            printf "${RED}${TEMP_PRINT}...${NC}\n"
+
+            IS_AUTHORIZED_KEYS_EXIST=false
+
+            fi
+            
+    }
+
+    TEMP_PRINT_A="Copy SSH authorized keys"
+    printf "${CYAN}${TEMP_PRINT_A}:${NC}\n"
+
+    check_ssh_authorized_keys_exist
+
+    while [ $IS_AUTHORIZED_KEYS_EXIST = false ]; do
+
+        # Check if user want to continue the process
+        ask_continue_process
+
+        # Check if SSH authorized keys exist
+        check_ssh_authorized_keys_exist
+
+    done
 
     mkdir /home/$NEW_USERNAME/.ssh
     cp /root/.ssh/authorized_keys /home/$NEW_USERNAME/.ssh/
     chown -R $NEW_USERNAME:$NEW_USERNAME /home/$NEW_USERNAME/.ssh/
 
-    printf "${temp}...${NC} ${GREEN}OK${NC}\n"
+    printf "${TEMP_PRINT_A}...${NC} ${GREEN}OK${NC}\n"
 
 }
 
@@ -778,6 +846,7 @@ install_imagemagick() {
 install_other_apps() {
 
     install_openssh                 # Install OpenSSH
+    install_host                    # Install host
     install_htop                    # Install htop
     install_git                     # Install Git
     install_nettools                # Install net-tools
@@ -800,6 +869,17 @@ install_openssh() {
     printf "${CYAN}${TEMP_PRINT}:${NC}\n"
 
     sudo apt install openssh-server -y
+
+}
+
+
+# Install host
+install_host() {
+
+    TEMP_PRINT="Install host"
+    printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+    sudo apt install host -y
 
 }
 
@@ -1025,6 +1105,366 @@ reboot_system() {
 }
 
 
+# ============================= EMAIL ===============================
+
+# Setup for Email Server
+setup_email_server() {
+
+    # Ask if user want to set up an email server
+    ask_setup_email_server() {
+
+        TEMP_PRINT="Set up an email server? [y/N] "
+        read -p "$TEMP_PRINT" USER_OPTION_SETUP_EMAIL_SERVER
+
+        if [ "$USER_OPTION_SETUP_EMAIL_SERVER" == "y" ] || [ "$USER_OPTION_SETUP_EMAIL_SERVER" == "Y" ]; then
+
+            TEMP_PRINT="The email server WILL be set up"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+            
+            is_setup_email_server=true
+
+        else
+
+            TEMP_PRINT="The email server will NOT be set up"
+            printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+            is_setup_email_server=false
+
+        fi
+
+    }
+
+    # Sending Test Email
+    send_test_email() {
+
+        TEMP_PRINT="Postfix sending test email"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        read -p "Receiver (eg, user@mail.com) []: " EMAIL_FOR_TEST_POSTFIX
+        read -p "Message []: " MESSAGE_FOR_TEST_POSTFIX
+
+        echo "$MESSAGE_FOR_TEST_POSTFIX" | sendmail $EMAIL_FOR_TEST_POSTFIX
+
+        printf "${TEMP_PRINT}...${NC} ${GREEN}OK${NC}\n"
+
+    }
+
+    ask_setup_email_server
+
+    if [ "$is_setup_email_server" = true ]; then
+
+        TEMP_PRINT="Setup for Email Server"
+        printf "${YELLOW}${TEMP_PRINT}...${NC}\n"
+
+        CURRENT_SERVER_HOSTNAME=$(hostname)
+
+        # Read user input
+        TEMP_PRINT_1="Email hostname (eg, mail.example.com) []: "
+        TEMP_PRINT_2="Email domain (eg, example.com) []: "
+        TEMP_PRINT_3="Email user alias (eg, admin) []: "
+        read -p "$TEMP_PRINT_1" EMAIL_HOSTNAME
+        read -p "$TEMP_PRINT_2" EMAIL_DOMAIN
+        read -p "$TEMP_PRINT_3" EMAIL_USER_ALIAS
+
+        # -----------------------------------------------------------
+
+        # Update package list
+        TEMP_PRINT="Update package list"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        sudo apt update
+
+        # Install postfix
+        TEMP_PRINT="Install postfix"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        sudo apt install postfix -y
+
+        # Install telnet (to check port 25)
+        TEMP_PRINT="Install telnet (to check port 25)"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        sudo apt install telnet -y
+
+        # Install mailutils (to send and read email)
+        TEMP_PRINT="Install mailutils to (send and read email)"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        sudo apt install mailutils -y
+
+        # -----------------------------------------------------------
+
+        # Replace server hostname with email hostname in Postfix config
+        TEMP_PRINT="Replace server hostname with email hostname in Postfix config"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        # Delete lines that contain a pattern of 'myhostname =' and 'mydestination ='
+        TEMP_PRINT="Delete lines that contain a pattern of 'myhostname =' and 'mydestination ='"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo sed -i '/myhostname =/d' $FILE_CONFIG_POSTFIX_MAIN
+        sudo sed -i '/mydestination =/d' $FILE_CONFIG_POSTFIX_MAIN
+
+        # Add new line with new values of 'myhostname' and 'mydestination'
+        TEMP_PRINT="Add new line with new values of 'myhostname' and 'mydestination'"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        printf "myhostname = $EMAIL_HOSTNAME\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
+        printf "mydestination = \$myhostname, $EMAIL_DOMAIN, $EMAIL_HOSTNAME, localhost.$EMAIL_DOMAIN, localhost\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
+
+        sudo systemctl reload postfix
+
+        # -----------------------------------------------------------
+
+        # Check Postfix config after edit
+        TEMP_PRINT="Check Postfix config after edit"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        cat $FILE_CONFIG_POSTFIX_MAIN | grep -e myhostname -e mydestination
+
+        # Add new line with new values of aliases
+        TEMP_PRINT="Add new line with new values of aliases"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        printf "root:\t${EMAIL_USER_ALIAS}\n" | sudo tee -a $FILE_CONFIG_ALIASES
+        sudo newaliases
+
+        # Check Postfix version with this command
+        TEMP_PRINT="Check Postfix version with this command"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        postconf mail_version
+
+        # Check if Postfix master process is listening on TCP port 25
+        TEMP_PRINT="Check if Postfix master process is listening on TCP port 25"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo ss -lnpt | grep master 
+
+        # Postfix ships with many binaries under the /usr/sbin/ directory
+        TEMP_PRINT="Postfix ships with many binaries under the /usr/sbin/ directory"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        dpkg -L postfix | grep /usr/sbin/ 
+
+        # Open TCP Port 25 (inbound) in firewall
+        TEMP_PRINT="Open TCP Port 25 (inbound) in firewall"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo ufw allow 25/tcp 
+
+        # -----------------------------------------------------------
+
+        # Create an SPF Record in DNS (v=spf1 mx ~all)
+        TEMP_PRINT="Create an SPF Record in DNS (v=spf1 mx ~all)"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        # Check if user want to continue the process
+        ask_continue_process
+
+        # -----------------------------------------------------------
+
+        # Install SPF Policy Agen (to detect forged incoming emails)
+        TEMP_PRINT="Install SPF Policy Agen (to detect forged incoming emails)"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        sudo apt install postfix-policyd-spf-python -y
+
+        # Edit the Postfix master process configuration file (to start the SPF policy daemon when it’s starting itself)
+        TEMP_PRINT="Edit the Postfix master process configuration file (to start the SPF policy daemon when it’s starting itself)"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+        
+        TEMP_PRINT_1="policyd-spf  unix  -       n       n       -       0       spawn"
+        TEMP_PRINT_2="user=policyd-spf argv=/usr/bin/policyd-spf"
+        printf "\n$TEMP_PRINT_1\n  $TEMP_PRINT_2\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MASTER
+
+        # Impose a restriction on incoming emails (by rejecting unauthorized email and checking SPF record)
+        TEMP_PRINT="Impose a restriction on incoming emails (by rejecting unauthorized email and checking SPF record)"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+        
+        TEMP_PRINT_1="policyd-spf_time_limit = 3600"
+        TEMP_PRINT_2="smtpd_recipient_restrictions ="
+        TEMP_PRINT_3="permit_mynetworks,"
+        TEMP_PRINT_4="permit_sasl_authenticated,"
+        TEMP_PRINT_5="reject_unauth_destination,"
+        TEMP_PRINT_6="check_policy_service unix:private/policyd-spf"
+        printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n   $TEMP_PRINT_3\n   $TEMP_PRINT_4\n   $TEMP_PRINT_5\n   $TEMP_PRINT_6\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
+        sudo systemctl restart postfix
+
+        # -----------------------------------------------------------
+
+        # Setting up DKIM
+        # First, install OpenDKIM which is an open-source implementation of the DKIM sender authentication system.
+        TEMP_PRINT="Install OpenDKIM"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        sudo apt install opendkim opendkim-tools -y
+
+        # Add postfix user to OpenDKIM group
+        TEMP_PRINT="Add postfix user to OpenDKIM group"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo gpasswd -a postfix opendkim 
+
+        # Edit OpenDKIM configuration files
+        TEMP_PRINT="Edit OpenDKIM configuration files"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo sed -i "s/#Canonicalization\tsimple/Canonicalization\tsimple/g" $FILE_CONFIG_OPENDKIM
+        sudo sed -i "s/#Mode\t\t\tsv/Mode\t\t\tsv/g" $FILE_CONFIG_OPENDKIM
+        sudo sed -i "s/#SubDomains\t\tno/SubDomains\t\tno/g" $FILE_CONFIG_OPENDKIM
+
+        TEMP_PRINT_1="AutoRestart         yes"
+        TEMP_PRINT_2="AutoRestartRate     10/1M"
+        TEMP_PRINT_3="Background          yes"
+        TEMP_PRINT_4="DNSTimeout          5"
+        TEMP_PRINT_5="SignatureAlgorithm  rsa-sha256 "
+        printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n" | sudo tee -a $FILE_CONFIG_OPENDKIM
+
+        TEMP_PRINT_1="# Map domains in From addresses to keys used to sign messages"
+        TEMP_PRINT_2="KeyTable           refile:$FILE_CONFIG_OPENDKIM_KEYTABLE"
+        TEMP_PRINT_3="SigningTable       refile:$FILE_CONFIG_OPENDKIM_SIGNINGTABLE"
+        TEMP_PRINT_4="# Hosts to ignore when verifying signatures"
+        TEMP_PRINT_5="ExternalIgnoreList  $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS"
+        TEMP_PRINT_6="# A set of internal hosts whose mail should be signed"
+        TEMP_PRINT_7="InternalHosts       $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS "
+        printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n\n$TEMP_PRINT_6\n$TEMP_PRINT_7\n" | sudo tee -a $FILE_CONFIG_OPENDKIM
+
+        # -----------------------------------------------------------
+
+        # Create a directory structure for OpenDKIM
+        TEMP_PRINT="Create a directory structure for OpenDKIM"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo mkdir /etc/opendkim
+        sudo mkdir /etc/opendkim/keys
+
+        # Change the owner from 'root' to 'opendkim' (make sure only 'opendkim' user can read and write to the keys directory)
+        TEMP_PRINT="Change the owner from 'root' to 'opendkim' (make sure only 'opendkim' user can read and write to the keys directory)"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo chown -R opendkim:opendkim /etc/opendkim
+        sudo chmod go-rw /etc/opendkim/keys 
+
+        sudo touch $FILE_CONFIG_OPENDKIM_SIGNINGTABLE
+
+        TEMP_PRINT="*@$EMAIL_DOMAIN    default._domainkey.$EMAIL_DOMAIN"
+        printf "\n$TEMP_PRINT\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_SIGNINGTABLE
+
+        sudo touch $FILE_CONFIG_OPENDKIM_KEYTABLE
+
+        TEMP_PRINT="default._domainkey.$EMAIL_DOMAIN    $EMAIL_DOMAIN:default:/etc/opendkim/keys/$EMAIL_DOMAIN/default.private"
+        printf "\n$TEMP_PRINT\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_KEYTABLE
+
+        sudo touch $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS
+
+        TEMP_PRINT_1="#127.0.0.1"
+        TEMP_PRINT_2="localhost"
+        TEMP_PRINT_3="*.$EMAIL_DOMAIN"
+        printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n\n$TEMP_PRINT_3\n" | sudo tee -a $FILE_CONFIG_OPENDKIM_TRUSTEDHOSTS
+
+        # -----------------------------------------------------------
+
+        # Create a separate folder for the domain
+        TEMP_PRINT="Create a separate folder for the domain"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo mkdir /etc/opendkim/keys/$EMAIL_DOMAIN 
+        
+        # Generate keys using opendkim-genkey tool
+        TEMP_PRINT="Generate keys using opendkim-genkey tool"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo opendkim-genkey -b 2048 -d $EMAIL_DOMAIN -D /etc/opendkim/keys/$EMAIL_DOMAIN -s default -v
+        
+        # Make 'opendkim' as the owner of the Private Key
+        TEMP_PRINT="Make 'opendkim' as the owner of the Private Key"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo chown opendkim:opendkim /etc/opendkim/keys/$EMAIL_DOMAIN/default.private 
+        
+        # Change the permission (only the opendkim user has read and write access to the file)
+        TEMP_PRINT="Change the permission (only the opendkim user has read and write access to the file)"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo chmod 600 /etc/opendkim/keys/$EMAIL_DOMAIN/default.private 
+
+        # Display the public key
+        TEMP_PRINT="Display the public key"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo cat /etc/opendkim/keys/$EMAIL_DOMAIN/default.txt
+
+        # -----------------------------------------------------------
+
+        # Publish the Public Key in DNS Records
+        TEMP_PRINT="Publish the Public Key in DNS Records"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        # Check if user want to continue the process
+        ask_continue_process
+
+        # -----------------------------------------------------------
+
+        # Test the DKIM Key
+        TEMP_PRINT="Test the DKIM Key"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo opendkim-testkey -d $EMAIL_DOMAIN -s default -vvv
+
+        # -----------------------------------------------------------
+
+        # Create a directory to hold the OpenDKIM socket file and allow only opendkim user and postfix group to access it
+        TEMP_PRINT="Create a directory to hold the OpenDKIM socket file and allow only opendkim user and postfix group to access it"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo mkdir /var/spool/postfix/opendkim
+        sudo chown opendkim:postfix /var/spool/postfix/opendkim
+
+        # Edit the OpenDKIM main configuration file
+        TEMP_PRINT="Edit the OpenDKIM main configuration file"
+        printf "${PURPLE}${TEMP_PRINT}...${NC}\n"
+
+        sudo sed -i "s/local:\/run\/opendkim\/opendkim.sock/local:\/var\/spool\/postfix\/opendkim\/opendkim.sock/g" $FILE_CONFIG_OPENDKIM
+        sudo sed -i "s/SOCKET=local:\$RUNDIR\/opendkim.sock/SOCKET=\"local:\/var\/spool\/postfix\/opendkim\/opendkim.sock\"/g" $FILE_CONFIG_OPENDKIM_DEFAULT
+
+        TEMP_PRINT_1="# Milter configuration"
+        TEMP_PRINT_2="milter_default_action = accept"
+        TEMP_PRINT_3="milter_protocol = 6"
+        TEMP_PRINT_4="smtpd_milters = local:opendkim/opendkim.sock"
+        TEMP_PRINT_5="non_smtpd_milters = \$smtpd_milters"
+        printf "\n$TEMP_PRINT_1\n$TEMP_PRINT_2\n$TEMP_PRINT_3\n$TEMP_PRINT_4\n$TEMP_PRINT_5\n" | sudo tee -a $FILE_CONFIG_POSTFIX_MAIN
+
+        sudo systemctl restart opendkim postfix
+
+        # -----------------------------------------------------------
+
+        # Check if port 25 open or blocked
+        TEMP_PRINT="Check if port 25 open or blocked"
+        printf "${CYAN}${TEMP_PRINT}:${NC}\n"
+
+        # Run the following command on your mail server.
+        echo -e '\x1dquit\x0d' | sleep 5 | telnet gmail-smtp-in.l.google.com 25 > $FILE_TEMP
+        CHECK_PORT_25=$(cat $FILE_TEMP | grep "220 mx.google.com")
+        if [ "$CHECK_PORT_25" != "" ]; then 
+
+            printf "Port 25... ${GREEN}OK${NC}\n"
+
+            # Sending Test Email
+            send_test_email
+
+        else 
+
+            printf "${RED}ERROR: Port 25 CLOSED!${NC}\n"
+
+        fi
+
+        rm $FILE_TEMP
+    
+    fi
+
+}
+
 # ============================= OTHERS ==============================
 
 # Check if user want to continue the process
@@ -1056,3 +1496,7 @@ main "$@"
 # - How to insert text into a root-owned file using sudo? https://unix.stackexchange.com/a/4337
 # - Temporary failure in name resolution https://stackoverflow.com/a/54460886
 # - How do I test if an item is in a bash array? https://unix.stackexchange.com/a/625665
+# - Auto exit Telnet https://stackoverflow.com/a/54364978
+# - Email Setup:
+#   > Build Your Own Email Server on Ubuntu https://www.linuxbabe.com/mail-server/setup-basic-postfix-mail-sever-ubuntu
+#   > How to Set up SPF and DKIM with Postfix https://www.linuxbabe.com/mail-server/setting-up-dkim-and-spf
