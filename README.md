@@ -2,11 +2,11 @@
 
 This repository contain a [script](setup.sh) that can be used to set up an environment for:
 
-1. [web development](#web-development), includes:
+1. **web development**, includes:
     - [virtual machine](#virtual-machine) setup in VirtualBox 6.1[^1] for **development** environment
     - [cloud](#cloud) setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment
     - [bare-metal (physical server)](#physical-server) setup for **production** environment
-1. [mail server](#mail-server), includes:
+1. **mail server**, includes:
     - set up a mail server in cloud
 
 ## Virtual Machine
@@ -75,8 +75,8 @@ Make sure to add the `SSH keys` in the **Client Area** before starting the setup
 ## Physical Server
 
 1. Download and [install](docs/install-ubuntu-server.md)[^4] the OS.
-1. [User Setup](#user-setup).
-1. (Optional) [Proxy Setup](#proxy-setup).
+1. [User Setup](docs/user-setup.md).
+1. (Optional) [Proxy Setup](docs/proxy-setup.md).
 1. Clone this project and open the folder.
     ```bash
     git clone https://github.com/ba1x/env-setup.git
