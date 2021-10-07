@@ -2,17 +2,11 @@
 
 This repository contain a [script](setup.sh) that can be used to set up an environment for [web development](#web-development) and [mail server](#mail-server).
 
-### Web Development
+## Web Development
 
 - [Virtual machine](#virtual-machine) setup in VirtualBox 6.1[^1] for **development** environment.
 - [Cloud](#cloud) setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment.
 - [Bare-metal (physical server)](#physical-server) setup for **production** environment.
-
-### Mail Server
-
-- Set up a mail server in cloud.
-
-## How to Start
 
 ### Virtual Machine
 
@@ -20,18 +14,18 @@ The virtual machine that will be used is [VirtualBox](https://www.virtualbox.org
 
 #### Desktop
 
-1. Download and install[^2] the [guest OS](#virtualbox).
-1. [User Setup](#user-setup) in the **guest**.
-1. [Install VBox Guest](#install-vbox-guest) in the **guest**.
+1. Download and install[^2] the [guest OS](docs/general-information.md#virtualbox).
+1. [User Setup](docs/user-setup.md) in the **guest**.
+1. [Install VBox Guest](docs/install-vbox-guest.md) in the **guest**.
 1. [Download](https://github.com/ba1x/env-setup/archive/refs/heads/main.zip) this project using the **host**.
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
 1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `1. Vbox (Desktop)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
 #### Server
 
-1. Download and [install](docs/install-ubuntu-server.md)[^3] the [guest OS](#virtualbox).
-1. [User Setup](#user-setup) in the **guest**.
-1. [Fix Error](#fix-error) in the **guest**.
+1. Download and [install](docs/install-ubuntu-server.md)[^3] the [guest OS](docs/general-information.md#virtualbox).
+1. [User Setup](docs/user-setup.md) in the **guest**.
+1. [Fix Error](docs/fix-error.md) in the **guest**.
 1. Clone this project and open the folder.
     ```bash
     git clone https://github.com/ba1x/env-setup.git
@@ -45,7 +39,7 @@ Make sure to add the `SSH keys` in the **Client Area** before starting the setup
 
 #### DigitalOcean
 
-1. Create a new droplet with the [required specification](#digitalocean-1) and choose `SSH Keys` (that already added) for the **Authentication**.
+1. Create a new droplet with the [required specification](docs/general-information.md#digitalocean) and choose `SSH Keys` (that already added) for the **Authentication**.
 1. Login to the server.
     ```bash
     ssh root@SERVER_IP_ADDRESS     # login using SSH
@@ -59,7 +53,7 @@ Make sure to add the `SSH keys` in the **Client Area** before starting the setup
 
 #### Hostwinds
 
-1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the [required specification](#hostwinds-1) and choose `SSH Keys` (that already added) for the **Authentication**.
+1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the [required specification](docs/general-information.md#hostwinds) and choose `SSH Keys` (that already added) for the **Authentication**.
 
 
 1. Log in to the server using SSH:
@@ -93,6 +87,11 @@ Make sure to add the `SSH keys` in the **Client Area** before starting the setup
 
 1. SSH manual [setup](docs/ssh-manual-setup.md) for using the existing key.
 1. [Clear](docs/clear-bash-history.md) bash history if necessary.
+
+## Mail Server
+
+- Set up a mail server in cloud.
+
 
 ## Footnotes
 
