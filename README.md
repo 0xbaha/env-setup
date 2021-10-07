@@ -1,18 +1,19 @@
 # Environment Setup
 
-This repository contain a [script](setup.sh) that can be used to set up an environment for [web development](#web-development) and [mail server](#mail-server).
+This repository contain a [script](setup.sh) that can be used to set up an environment for:
 
-## Web Development
+1. [web development](#web-development), includes:
+    - [virtual machine](#virtual-machine) setup in VirtualBox 6.1[^1] for **development** environment
+    - [cloud](#cloud) setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment
+    - [bare-metal (physical server)](#physical-server) setup for **production** environment
+1. [mail server](#mail-server), includes:
+    - set up a mail server in cloud
 
-- [Virtual machine](#virtual-machine) setup in VirtualBox 6.1[^1] for **development** environment.
-- [Cloud](#cloud) setup in [DigitalOcean](https://m.do.co/c/d0e1521b9ceb) and [Hostwinds](https://www.hostwinds.com/) for **testing** and **staging** environment.
-- [Bare-metal (physical server)](#physical-server) setup for **production** environment.
-
-### Virtual Machine
+## Virtual Machine
 
 The virtual machine that will be used is [VirtualBox](https://www.virtualbox.org/).
 
-#### Desktop
+### Desktop
 
 1. Download and install[^2] the [guest OS](docs/general-information.md#virtualbox).
 1. [User Setup](docs/user-setup.md) in the **guest**.
@@ -21,7 +22,7 @@ The virtual machine that will be used is [VirtualBox](https://www.virtualbox.org
 1. Enable the **Shared Folders** from **host** to **guest**, then copy the downloaded file and extract it.
 1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `1. Vbox (Desktop)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-#### Server
+### Server
 
 1. Download and [install](docs/install-ubuntu-server.md)[^3] the [guest OS](docs/general-information.md#virtualbox).
 1. [User Setup](docs/user-setup.md) in the **guest**.
@@ -33,11 +34,11 @@ The virtual machine that will be used is [VirtualBox](https://www.virtualbox.org
     ```
 1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `2. Vbox (Server)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-### Cloud
+## Cloud
 
 Make sure to add the `SSH keys` in the **Client Area** before starting the setup below.
 
-#### DigitalOcean
+### DigitalOcean
 
 1. Create a new droplet with the [required specification](docs/general-information.md#digitalocean) and choose `SSH Keys` (that already added) for the **Authentication**.
 1. Login to the server.
@@ -51,7 +52,7 @@ Make sure to add the `SSH keys` in the **Client Area** before starting the setup
     ```
 1. Run command [`./setup.sh`](setup.sh) and choose option `3. Cloud (DigitalOcean/Hostwinds)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-#### Hostwinds
+### Hostwinds
 
 1. Create an [unmanage Linux VPS hosting](https://www.hostwinds.com/vps/unmanaged-linux) with the [required specification](docs/general-information.md#hostwinds) and choose `SSH Keys` (that already added) for the **Authentication**.
 
@@ -71,7 +72,7 @@ Make sure to add the `SSH keys` in the **Client Area** before starting the setup
     ```
 1. Run command `./setup.sh` and choose option `3. Cloud (DigitalOcean/Hostwinds)` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup.
 
-### Physical Server
+## Physical Server
 
 1. Download and [install](docs/install-ubuntu-server.md)[^4] the OS.
 1. [User Setup](#user-setup).
@@ -83,15 +84,10 @@ Make sure to add the `SSH keys` in the **Client Area** before starting the setup
     ```
 1. Run command [`sudo ./setup.sh`](setup.sh) and choose option `4. Physical Server` to [initiate](docs/init-setup.md) the setup, install the [required applications](docs/install-required-applications.md), and [end up](docs/end-setup.md) the setup. 
 
-### (Optional) After Finish Setup
+## (Optional) After Finish Setup
 
 1. SSH manual [setup](docs/ssh-manual-setup.md) for using the existing key.
 1. [Clear](docs/clear-bash-history.md) bash history if necessary.
-
-## Mail Server
-
-- Set up a mail server in cloud.
-
 
 ## Footnotes
 
